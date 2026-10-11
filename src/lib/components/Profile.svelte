@@ -3,6 +3,7 @@
 	import { person, stats, storySoFar } from '$lib/data/profile';
 	import { countUp, reveal } from '$lib/actions';
 	import Portrait from './Portrait.svelte';
+	import { ink } from '$lib/transitions';
 
 	const facts = $derived([
 		{ k: 'Name', v: person.name },
@@ -51,6 +52,13 @@
 						<p class="stat-note kicker">{stat.note}</p>
 					</div>
 				{/each}
+				<div class="quest" use:reveal style="--delay: 0.3s">
+					<span class="quest-mark" aria-hidden="true"><span class="display">!</span></span>
+					<p class="kicker quest-label">Current quest</p>
+					{#key arc.current}
+						<p class="quest-text" in:ink>{arc.data.quest}</p>
+					{/key}
+				</div>
 			</div>
 		</div>
 
@@ -195,6 +203,46 @@
 		margin-top: 0.3rem;
 		color: var(--ink-faint);
 		font-size: 0.66rem;
+	}
+
+	.quest {
+		grid-column: 1 / -1;
+		position: relative;
+		padding: 1.2rem 1.3rem 1.3rem 4.2rem;
+		background: var(--ink);
+		color: var(--white);
+		border: var(--line) solid var(--ink);
+		box-shadow: 5px 5px 0 var(--red);
+	}
+
+	.quest-mark {
+		position: absolute;
+		left: 1rem;
+		top: 50%;
+		display: grid;
+		place-items: center;
+		width: 2.2rem;
+		height: 2.2rem;
+		background: var(--red);
+		color: var(--white);
+		font-size: 1.4rem;
+		transform: translateY(-50%) rotate(45deg);
+	}
+
+	.quest-mark span {
+		transform: rotate(-45deg);
+	}
+
+	.quest-label {
+		color: var(--red);
+	}
+
+	.quest-text {
+		margin-top: 0.3rem;
+		font-family: var(--font-letter);
+		font-weight: 700;
+		font-size: 1.05rem;
+		line-height: 1.4;
 	}
 
 	.story {

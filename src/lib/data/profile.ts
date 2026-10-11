@@ -15,6 +15,8 @@ export interface Arc {
 	notes: string[];
 	/** Title shown on the character profile. */
 	classTitle: string;
+	/** What's in progress right now, shown on the profile. */
+	quest: string;
 	specialMove: string;
 	/** Chapter ids, in the order this arc shows them. */
 	chapters: string[];
@@ -79,6 +81,7 @@ export const arcs: Record<ArcId, Arc> = {
 		shout: { value: 'SOLE', label: 'engineer, full ERP' },
 		notes: ['schema-first', 'double-entry, in the DB'],
 		classTitle: 'Product Engineer · Sprout Digital Labs',
+		quest: 'Leading 3 engineers on a Finance & Accounting module: a 21-table double-entry ledger to replace Accurate.',
 		specialMove: 'Schema-first build: one schema, parallel submodules',
 		chapters: ['khonic', 'labamu', 'quickpro', 'dressonme'],
 		sideStories: ['gov-cv', 'urails', 'cashkit'],
@@ -104,6 +107,7 @@ export const arcs: Record<ArcId, Arc> = {
 		shout: { value: '1M+', label: 'downloads' },
 		notes: ['Flutter · Swift · Kotlin', 'ships to both stores'],
 		classTitle: 'Product Engineer (Mobile) · Sprout Digital Labs',
+		quest: 'Owning the Khonic mobile apps and PWA that warehouse staff scan with every day.',
 		specialMove: 'One codebase, two stores',
 		chapters: ['labamu', 'quickpro', 'khonic', 'dressonme'],
 		sideStories: ['healthcare-ios', 'halotutor', 'urails', 'cashkit'],
