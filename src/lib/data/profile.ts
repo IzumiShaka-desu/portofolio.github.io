@@ -62,8 +62,15 @@ export const person = {
 	title: 'Product Engineer',
 	education: 'S.Kom Informatics, Universitas Singaperbangsa Karawang (GPA 3.84)',
 	email: 'shakaaji29@gmail.com',
-	/** Manga-processed photo in /static (see scripts/mangafy.sh). Null shows the silhouette. */
-	portrait: null as string | null,
+	/**
+	 * Manga art in /static/art, each as .webp + .jpg. `full` fills the cover panel,
+	 * `bust` is a tighter crop for the profile card. Null shows a silhouette instead.
+	 */
+	portrait: {
+		full: 'art/shaka-sakura',
+		bust: 'art/shaka-bust',
+		alt: 'Shaka standing under a cherry tree, drawn manga style'
+	} as { full: string; bust: string; alt: string } | null,
 	links: {
 		linkedin: 'https://www.linkedin.com/in/akashaka',
 		github: 'https://github.com/IzumiShaka-desu'

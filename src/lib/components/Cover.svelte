@@ -6,6 +6,7 @@
 	import FocusLines from './FocusLines.svelte';
 	import Hanko from './Hanko.svelte';
 	import Portrait from './Portrait.svelte';
+	import Petals from './Petals.svelte';
 	import ShoutBubble from './ShoutBubble.svelte';
 	import SpeechBubble from './SpeechBubble.svelte';
 	import Schema from '$lib/illustrations/Schema.svelte';
@@ -44,18 +45,23 @@
 			</div>
 
 			<!-- B: character -->
-			<div class="pB frame anim" style="--d: 0.12s">
+			<div class="pB frame anim" class:has-art={person.portrait} style="--d: 0.12s">
 				<div class="cut">
-					<div class="b-tone tone tone-fade-up" aria-hidden="true"></div>
-					<span class="sfx b-sfx" lang="ja" aria-hidden="true">ゴゴゴ</span>
+					{#if person.portrait}
+						<Portrait class="b-art" eager />
+						<Petals />
+					{:else}
+						<div class="b-tone tone tone-fade-up" aria-hidden="true"></div>
+						<span class="sfx b-sfx" lang="ja" aria-hidden="true">ゴゴゴ</span>
+						<Portrait class="b-portrait" />
+					{/if}
 					<div class="b-bubble">
 						{#key arc.current}
 							<div in:ink>
-								<SpeechBubble tail="br">{arc.data.bubble}</SpeechBubble>
+								<SpeechBubble tail={person.portrait ? 'bl' : 'br'}>{arc.data.bubble}</SpeechBubble>
 							</div>
 						{/key}
 					</div>
-					<Portrait class="b-portrait" />
 				</div>
 			</div>
 
@@ -129,6 +135,11 @@
 	.pB {
 		grid-area: b;
 		min-height: 360px;
+	}
+
+	.pB.has-art,
+	.pB.has-art .cut {
+		min-height: 560px;
 	}
 
 	.pC {
@@ -267,6 +278,25 @@
 		left: clamp(14px, 2.5vw, 24px);
 		right: 26%;
 		z-index: 2;
+	}
+
+	.pB :global(.b-art) {
+		position: absolute;
+		inset: 0;
+		--art-pos: 22% 62%;
+	}
+
+	.pB :global(.b-art img) {
+		position: absolute;
+		inset: 0;
+	}
+
+	/* bubble floats over the branches, tail pointing down at him */
+	.has-art .b-bubble {
+		top: 30%;
+		left: auto;
+		right: clamp(10px, 4%, 22px);
+		width: min(62%, 230px);
 	}
 
 	.pB :global(.b-portrait) {
@@ -416,6 +446,14 @@
 
 		.pB :global(.b-portrait) {
 			width: min(78%, 300px);
+		}
+
+		.pB.has-art {
+			min-height: 0;
+		}
+
+		.pB.has-art .cut {
+			min-height: 100%;
 		}
 	}
 

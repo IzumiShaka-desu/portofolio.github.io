@@ -11,15 +11,14 @@ The site has two **arcs**, one for each role. Picking an arc rewrites the cover,
 
 All copy lives in [`src/lib/data/profile.ts`](src/lib/data/profile.ts): arcs, chapters, side stories, stats, timeline, tools, and licenses. Each arc lists which chapters it shows and in what order.
 
-## Adding a portrait
+## Portrait art
 
-The cover shows a silhouette until you add a photo. To turn a photo into manga-style line art:
+The manga art lives in `static/art/` as `.webp` with a `.jpg` fallback:
 
-```sh
-scripts/mangafy.sh path/to/photo.jpg static/portrait.png "WxH+X+Y"   # crop is optional
-```
+- `shaka-sakura`: the full panel on the cover
+- `shaka-bust`: a tighter crop for the character profile
 
-Then set `portrait: 'portrait.png'` in `person` inside `profile.ts`. The script needs ImageMagick 6.9+.
+To swap it, replace those files (keep both formats) or point `person.portrait` in `profile.ts` at new ones. Setting `portrait: null` brings back the silhouette.
 
 ## Development
 

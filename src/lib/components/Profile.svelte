@@ -28,9 +28,11 @@
 
 		<div class="databook">
 			<div class="card panel" use:reveal>
-				<div class="card-art tone" aria-hidden="true">
-					<Portrait class="card-portrait" />
-					<span class="sfx card-sfx" lang="ja">ドドド</span>
+				<div class="card-art tone" class:has-art={person.portrait}>
+					<Portrait variant="bust" class="card-portrait" />
+					{#if !person.portrait}
+						<span class="sfx card-sfx" lang="ja" aria-hidden="true">ドドド</span>
+					{/if}
 				</div>
 				<dl class="facts">
 					{#each facts as fact (fact.k)}
@@ -130,6 +132,28 @@
 		width: min(70%, 240px);
 		height: auto;
 		transform: translateX(-50%);
+	}
+
+	.card-art.has-art {
+		min-height: 380px;
+		background-image: none;
+	}
+
+	.card-art.has-art::before {
+		display: none;
+	}
+
+	.card-art :global(picture.card-portrait) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		transform: none;
+		--art-pos: 50% 18%;
+	}
+
+	.card-art :global(picture.card-portrait img) {
+		position: absolute;
+		inset: 0;
 	}
 
 	.card-sfx {
