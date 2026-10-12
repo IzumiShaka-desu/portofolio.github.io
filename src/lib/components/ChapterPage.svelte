@@ -1,33 +1,59 @@
 <script lang="ts">
 	import type { ArcId, Chapter } from '$lib/data/profile';
 	import ShoutBubble from './ShoutBubble.svelte';
+	import Hanko from './Hanko.svelte';
+	import Redactable from './Redactable.svelte';
 	import Warehouse from '$lib/illustrations/Warehouse.svelte';
 	import Pos from '$lib/illustrations/Pos.svelte';
 	import Trading from '$lib/illustrations/Trading.svelte';
 	import Fitting from '$lib/illustrations/Fitting.svelte';
+	import Classified from '$lib/illustrations/Classified.svelte';
 
 	interface Props {
 		chapter: Chapter;
 		index: number;
 		total: number;
 		arcId: ArcId;
+		/** When set, a folded corner invites turning to the next page. */
+		onturn?: () => void;
 	}
 
-	let { chapter, index, total, arcId }: Props = $props();
+	let { chapter, index, total, arcId, onturn }: Props = $props();
 
-	const illustrations = { warehouse: Warehouse, pos: Pos, trading: Trading, fitting: Fitting };
+	const illustrations = {
+		warehouse: Warehouse,
+		pos: Pos,
+		trading: Trading,
+		fitting: Fitting,
+		classified: Classified
+	};
 	const Illo = $derived(illustrations[chapter.illustration]);
 	const points = $derived(chapter.points[arcId] ?? chapter.points.default);
 	const shout = $derived(chapter.shout[arcId] ?? chapter.shout.default);
 	const num = $derived(String(index + 1).padStart(2, '0'));
+
+	// The unread pages behind this one, drawn as a stack that thins out as you read.
+	const stack = $derived.by(() => {
+		const layers = Math.min(total - index - 1, 4);
+		if (layers <= 0) return '6px 6px 0 var(--ink)';
+		const out: string[] = [];
+		for (let k = 1; k <= layers; k++) {
+			const o = k * 5;
+			out.push(`${o}px ${o}px 0 0 var(--white)`, `${o}px ${o}px 0 2px var(--ink)`);
+		}
+		return out.join(', ');
+	});
 </script>
 
-<article class="chapter" style="--i: {index}; --tilt: {index % 2 ? 0.6 : -0.5}deg" aria-labelledby="ch-{chapter.id}">
+<article class="chapter" class:classified={chapter.classified} aria-labelledby="ch-{chapter.id}">
 	<div class="tab kicker">Chapter {num}</div>
-	<div class="sheet">
+	<div class="sheet" style="box-shadow: {stack}">
 		<header class="p-title panel">
+			{#if chapter.classified}
+				<Hanko class="seal" top="Case" main="機密" bottom="NDA" />
+			{/if}
 			<p class="meta kicker">{chapter.where} · {chapter.when}</p>
-			<h3 id="ch-{chapter.id}" class="display">{chapter.title}</h3>
+			<h3 id="ch-{chapter.id}" class="display"><Redactable text={chapter.title} /></h3>
 			<p class="tagline">{chapter.tagline}</p>
 			{#if chapter.rating}
 				<p class="rating" aria-label="Rated {chapter.rating} out of 5">★ {chapter.rating}<span>/5</span></p>
@@ -45,7 +71,7 @@
 		<div class="p-text panel">
 			<ul>
 				{#each points as point (point)}
-					<li>{point}</li>
+					<li><Redactable text={point} /></li>
 				{/each}
 			</ul>
 		</div>
@@ -60,10 +86,22 @@
 						<a class="btn" href={link.href} target="_blank" rel="noopener">{link.label} ↗</a>
 					{/each}
 				</div>
-			{:else}
-				<span class="private lettering">internal product: no public link</span>
+			{:else if chapter.note}
+				<span class="private lettering">{chapter.note}</span>
 			{/if}
 		</footer>
+
+		{#if onturn}
+			<button type="button" class="dogear" onclick={onturn} aria-label="Turn to chapter {index + 2}">
+				<svg viewBox="0 0 56 56" aria-hidden="true">
+					<path class="gap" d="M0 0 L0 56 L56 56 Z" />
+					<path class="flap" d="M0 0 L56 0 L56 56 Z" />
+				</svg>
+				<span class="turn-label lettering"><span lang="ja">めくる</span> turn the page</span>
+			</button>
+		{:else if index === total - 1}
+			<p class="end lettering">last chapter · side stories below ↓</p>
+		{/if}
 	</div>
 	<p class="folio kicker" aria-hidden="true">— {num} / {String(total).padStart(2, '0')} —</p>
 </article>
@@ -71,7 +109,9 @@
 <style>
 	.chapter {
 		position: relative;
-		margin-bottom: clamp(28px, 5vw, 56px);
+		display: flex;
+		flex-direction: column;
+		height: 100%;
 	}
 
 	.tab {
@@ -91,15 +131,32 @@
 		gap: var(--gutter);
 		grid-template-columns: 1fr;
 		grid-template-areas: 'title' 'illo' 'text' 'foot';
+		grid-template-rows: auto auto 1fr auto;
+		flex: 1;
+		position: relative;
 		padding: var(--gutter);
+		/* room for the folded corner */
+		padding-bottom: calc(var(--gutter) + 2.8rem);
 		background: var(--white);
 		border: var(--line) solid var(--ink);
-		box-shadow: 8px 8px 0 var(--ink);
+	}
+
+	.classified .p-title {
+		background-image: repeating-linear-gradient(-45deg, transparent 0 9px, rgba(20, 20, 20, 0.05) 9px 10px);
+	}
+
+	.p-title :global(.seal) {
+		position: absolute;
+		top: 14px;
+		right: 14px;
+		font-size: 0.95rem;
+		transform: rotate(9deg);
 	}
 
 	.p-title {
 		grid-area: title;
 		padding: clamp(16px, 2.4vw, 26px);
+		padding-right: 5.5rem;
 	}
 
 	.meta {
@@ -240,6 +297,75 @@
 		color: var(--ink-faint);
 	}
 
+	.classified .private {
+		color: var(--red);
+	}
+
+	/* folded bottom-left corner: where you'd lift a manga page */
+	.dogear {
+		position: absolute;
+		left: calc(var(--line) * -1);
+		bottom: calc(var(--line) * -1);
+		z-index: 3;
+		display: flex;
+		align-items: flex-end;
+		gap: 0.4rem;
+		padding: 0;
+		border: 0;
+		background: none;
+		cursor: pointer;
+	}
+
+	.dogear svg {
+		width: 52px;
+		height: 52px;
+		overflow: visible;
+		transform-origin: bottom left;
+		transition: transform 0.25s var(--ease-snap);
+	}
+
+	.gap {
+		fill: var(--paper);
+	}
+
+	.flap {
+		fill: var(--paper-deep);
+		stroke: var(--ink);
+		stroke-width: 3;
+		stroke-linejoin: round;
+		filter: drop-shadow(-3px 3px 0 rgba(20, 20, 20, 0.25));
+	}
+
+	.turn-label {
+		margin-bottom: 8px;
+		font-size: 0.78rem;
+		color: var(--red);
+		white-space: nowrap;
+		opacity: 0.85;
+		transition:
+			opacity 0.2s,
+			transform 0.25s var(--ease-snap);
+	}
+
+	.dogear:hover svg,
+	.dogear:focus-visible svg {
+		transform: scale(1.3);
+	}
+
+	.dogear:hover .turn-label,
+	.dogear:focus-visible .turn-label {
+		opacity: 1;
+		transform: translateX(16px);
+	}
+
+	.end {
+		position: absolute;
+		left: var(--gutter);
+		bottom: 0.9rem;
+		font-size: 0.8rem;
+		color: var(--ink-faint);
+	}
+
 	.folio {
 		margin-top: 0.7rem;
 		text-align: center;
@@ -251,24 +377,11 @@
 			grid-template-columns: 1.1fr 1fr;
 			grid-template-rows: auto 1fr auto;
 			grid-template-areas: 'title illo' 'text illo' 'foot foot';
+			align-content: stretch;
 		}
 
 		.p-illo {
 			min-height: 320px;
-		}
-	}
-
-	/* Stack the pages like a pile of manga sheets when there's room to read each one. */
-	@media (min-width: 1000px) and (min-height: 760px) {
-		.chapter {
-			position: sticky;
-			top: calc(76px + var(--i) * 16px);
-			margin-bottom: 18vh;
-			transform: rotate(var(--tilt));
-		}
-
-		.chapter:last-child {
-			margin-bottom: 0;
 		}
 	}
 </style>
