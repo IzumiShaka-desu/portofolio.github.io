@@ -11,7 +11,7 @@ The site has two **arcs**, one for each role. Picking an arc rewrites the cover,
 
 All copy lives in [`src/lib/data/profile.ts`](src/lib/data/profile.ts): arcs, chapters, side stories, stats, timeline, tools, and licenses. Each arc lists which chapters it shows and in what order.
 
-Chapters are read one page at a time, manga style: the next page is on the left (←), turned with the folded corner, a swipe right, the left arrow key, or the contents tabs.
+Chapters are laid out like entries in a manga encyclopedia and read one page at a time. When a whole page fits on screen, the book pins in place and scrolling turns the pages; otherwise the pages are stacked and each one flips in as it scrolls into view. The contents tabs and the folded corner scroll to a chapter, and in pinned mode ← / → work too (← is next, as in manga).
 
 For NDA work, wrap anything confidential in a chapter title or point in `[[double brackets]]` and it renders as a black redaction bar. Only the length of the bracketed text is used, so put a placeholder like `[[xxxxxxxx]]` there, never the real name.
 

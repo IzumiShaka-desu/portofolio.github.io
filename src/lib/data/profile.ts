@@ -38,7 +38,16 @@ export interface Link {
 export interface Chapter {
 	id: string;
 	title: string;
+	/** Katakana reading, shown next to the entry number. */
+	kana: string;
+	/** Encyclopedia-style headline, the "!!" line. */
+	catchphrase: string;
+	/** Speech bubble over the art. */
+	quote: string;
 	tagline: string;
+	/** Parameters box: what I did, and how far it reached. */
+	role: string;
+	reach: string;
 	where: string;
 	when: string;
 	illustration: 'warehouse' | 'pos' | 'trading' | 'fitting' | 'classified';
@@ -148,7 +157,12 @@ export const chapters: Record<string, Chapter> = {
 	khonic: {
 		id: 'khonic',
 		title: 'Khonic',
+		kana: 'コニック',
+		catchphrase: 'One engineer, one schema, a whole warehouse!!',
+		quote: 'From the racks to the ledger, I own it.',
 		tagline: 'Warehouse management & ERP',
+		role: 'Sole engineer · leads 3 on accounting',
+		reach: 'Warehouse staff, every day',
 		where: 'Sprout Digital Labs · sole engineer',
 		when: '2023 – now',
 		illustration: 'warehouse',
@@ -172,7 +186,12 @@ export const chapters: Record<string, Chapter> = {
 	classified: {
 		id: 'classified',
 		title: 'Project [[xxxxxx]]',
+		kana: 'プロジェクト[[xxx]]',
+		catchphrase: 'The project that must not be named!!',
+		quote: "Can't say. Ask me in an interview.",
 		tagline: 'Client work under NDA',
+		role: 'Led iOS migration · built CV module',
+		reach: 'Classified · NDA',
 		where: 'Sprout Digital Labs · client projects',
 		when: '2023 – now',
 		illustration: 'classified',
@@ -195,7 +214,12 @@ export const chapters: Record<string, Chapter> = {
 	labamu: {
 		id: 'labamu',
 		title: 'Labamu',
+		kana: 'ラバム',
+		catchphrase: 'The 1M+ download POS app, now in Singapore!!',
+		quote: 'New country, new currency, same app.',
 		tagline: 'POS & business app for MSMEs',
+		role: 'Led mobile for the SG expansion',
+		reach: '1M+ downloads · 4.3★',
 		where: 'Sprout Digital Labs',
 		when: '2023 – now',
 		illustration: 'pos',
@@ -221,7 +245,12 @@ export const chapters: Record<string, Chapter> = {
 	quickpro: {
 		id: 'quickpro',
 		title: 'QuickPro',
+		kana: 'クイックプロ',
+		catchphrase: 'Market orders, live over WebSocket!!',
+		quote: 'The market moves. The screen keeps up.',
 		tagline: 'Real-time trading app',
+		role: 'Built core modules · freelance',
+		reach: '100K+ downloads · 4.5★',
 		where: 'Foreximf.com · freelance, remote',
 		when: '2022 – 2023',
 		illustration: 'trading',
@@ -241,7 +270,12 @@ export const chapters: Record<string, Chapter> = {
 	dressonme: {
 		id: 'dressonme',
 		title: 'DressOnMe',
+		kana: 'ドレスオンミー',
+		catchphrase: 'A fitting room that fits in your pocket!!',
+		quote: 'Try it on before you buy it.',
 		tagline: 'Virtual fitting app',
+		role: 'Mobile engineer · incubation team',
+		reach: 'Google Play & App Store',
 		where: 'Bangkit Incubation · Dikti & Binus',
 		when: '2022 – 2023',
 		illustration: 'fitting',
