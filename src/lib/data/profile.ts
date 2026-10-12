@@ -30,19 +30,28 @@ export interface Link {
 	href: string;
 }
 
+/**
+ * Text in chapter titles and points may wrap words in [[double brackets]] to
+ * render them as a redaction bar. Only the length of the wrapped text is used,
+ * so put a placeholder there, never the real name.
+ */
 export interface Chapter {
 	id: string;
 	title: string;
 	tagline: string;
 	where: string;
 	when: string;
-	illustration: 'warehouse' | 'pos' | 'trading' | 'fitting';
+	illustration: 'warehouse' | 'pos' | 'trading' | 'fitting' | 'classified';
+	/** Styles the page as a classified file (NDA work). */
+	classified?: boolean;
 	/** Big shout per arc; falls back to `default`. */
 	shout: Partial<Record<ArcId, string>> & { default: string };
 	rating?: string;
 	points: Partial<Record<ArcId, string[]>> & { default: string[] };
 	tags: string[];
 	links: Link[];
+	/** Shown instead of links when there is nothing public to link to. */
+	note?: string;
 }
 
 export interface SideStory {
@@ -90,8 +99,8 @@ export const arcs: Record<ArcId, Arc> = {
 		classTitle: 'Product Engineer · Sprout Digital Labs',
 		quest: 'Leading 3 engineers on a Finance & Accounting module: a 21-table double-entry ledger to replace Accurate.',
 		specialMove: 'Schema-first build: one schema, parallel submodules',
-		chapters: ['khonic', 'labamu', 'quickpro', 'dressonme'],
-		sideStories: ['gov-cv', 'urails', 'cashkit'],
+		chapters: ['khonic', 'classified', 'labamu', 'quickpro', 'dressonme'],
+		sideStories: ['urails', 'cashkit'],
 		focusTools: [
 			'Supabase',
 			'PostgreSQL',
@@ -116,8 +125,8 @@ export const arcs: Record<ArcId, Arc> = {
 		classTitle: 'Product Engineer (Mobile) · Sprout Digital Labs',
 		quest: 'Owning the Khonic mobile apps and PWA that warehouse staff scan with every day.',
 		specialMove: 'One codebase, two stores',
-		chapters: ['labamu', 'quickpro', 'khonic', 'dressonme'],
-		sideStories: ['healthcare-ios', 'halotutor', 'urails', 'cashkit'],
+		chapters: ['labamu', 'classified', 'quickpro', 'khonic', 'dressonme'],
+		sideStories: ['halotutor', 'urails', 'cashkit'],
 		focusTools: [
 			'Flutter',
 			'Dart',
@@ -157,7 +166,31 @@ export const chapters: Record<string, Chapter> = {
 			]
 		},
 		tags: ['Supabase', 'PostgreSQL', 'Flutter', 'PWA', 'Web dashboard'],
-		links: []
+		links: [],
+		note: 'Internal product: no public link'
+	},
+	classified: {
+		id: 'classified',
+		title: 'Project [[xxxxxx]]',
+		tagline: 'Client work under NDA',
+		where: 'Sprout Digital Labs · client projects',
+		when: '2023 – now',
+		illustration: 'classified',
+		classified: true,
+		shout: { default: 'TOP SECRET!' },
+		points: {
+			product: [
+				'Built and containerized (Docker) a computer vision module for [[xxxxxxxxxxxx]], a government photo-management platform, wired into its backend APIs and frontend.',
+				"Led the native iOS SDK migration for two apps of [[xxxxxxxxxx]], one of Indonesia's largest online healthcare platforms, to support iOS 17."
+			],
+			default: [
+				"Led the native iOS SDK migration for two apps of [[xxxxxxxxxx]], one of Indonesia's largest online healthcare platforms, to support iOS 17.",
+				'Built and containerized (Docker) a computer vision module for [[xxxxxxxxxxxx]], a government photo-management platform, wired into its backend APIs and frontend.'
+			]
+		},
+		tags: ['Swift', 'iOS 17', 'Native SDK', 'Docker', 'Computer vision', 'REST APIs'],
+		links: [],
+		note: 'Under NDA. Happy to walk through the engineering in an interview.'
 	},
 	labamu: {
 		id: 'labamu',
@@ -229,18 +262,6 @@ export const chapters: Record<string, Chapter> = {
 };
 
 export const sideStories: Record<string, SideStory> = {
-	'gov-cv': {
-		id: 'gov-cv',
-		title: 'Government photo platform',
-		kind: 'Client · computer vision',
-		text: 'Built and containerized (Docker) a computer vision module, wired into the backend APIs and frontend.'
-	},
-	'healthcare-ios': {
-		id: 'healthcare-ios',
-		title: 'Healthcare iOS SDK migration',
-		kind: 'Client · native iOS',
-		text: "Led the native iOS SDK migration for two apps of one of Indonesia's largest online healthcare platforms to support iOS 17."
-	},
 	urails: {
 		id: 'urails',
 		title: 'Urails',

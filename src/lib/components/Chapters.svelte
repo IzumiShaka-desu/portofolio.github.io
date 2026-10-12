@@ -3,7 +3,7 @@
 	import { arc } from '$lib/arc.svelte';
 	import { chapters, sideStories } from '$lib/data/profile';
 	import { reveal } from '$lib/actions';
-	import ChapterPage from './ChapterPage.svelte';
+	import ChapterReader from './ChapterReader.svelte';
 
 	const list = $derived(arc.data.chapters.map((id) => chapters[id]));
 	const sides = $derived(arc.data.sideStories.map((id) => sideStories[id]));
@@ -19,10 +19,8 @@
 		</div>
 
 		{#key arc.current}
-			<div class="stack" in:fade={{ duration: 250 }}>
-				{#each list as chapter, i (chapter.id)}
-					<ChapterPage {chapter} index={i} total={list.length} arcId={arc.current} />
-				{/each}
+			<div in:fade={{ duration: 250 }}>
+				<ChapterReader chapters={list} arcId={arc.current} />
 			</div>
 
 			<div class="sides" in:fade={{ duration: 250 }}>
@@ -47,6 +45,8 @@
 <style>
 	.chapters {
 		padding-block: clamp(40px, 7vw, 96px);
+		/* a page swinging past the spine must not widen the page */
+		overflow-x: clip;
 	}
 
 	.sorted {

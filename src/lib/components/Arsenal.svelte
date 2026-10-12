@@ -62,6 +62,8 @@
 
 <style>
 	.arsenal {
+		/* scattered tags start outside their columns */
+		overflow-x: clip;
 		padding-block: clamp(56px, 9vw, 120px);
 		border-top: var(--line) solid var(--ink);
 		background-image: repeating-linear-gradient(0deg, transparent 0 31px, rgba(20, 20, 20, 0.05) 31px 32px);
