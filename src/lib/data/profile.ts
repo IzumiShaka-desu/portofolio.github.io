@@ -200,11 +200,11 @@ export const chapters: Record<string, Chapter> = {
 		points: {
 			default: [
 				'A Google Photos–style platform for [[xxxxxxxxxxxx]], a government client, built on an open-source photo platform and extended with custom machine learning.',
-				'Built the computer vision module behind those features and containerized it with Docker.',
-				"Wired the module into the platform's backend APIs and frontend."
+				'Built the computer vision module behind those features with YOLO and TensorFlow, served it through FastAPI, and containerized it with Docker.',
+				"Wired the module into the platform's backend through OpenAPI and into the Vue frontend."
 			]
 		},
-		tags: ['Computer vision', 'Machine learning', 'Docker', 'REST APIs', 'Open source'],
+		tags: ['Computer vision', 'YOLO', 'TensorFlow', 'FastAPI', 'Vue', 'OpenAPI', 'Docker'],
 		links: [],
 		note: 'Under NDA. Happy to walk through the engineering in an interview.'
 	},
