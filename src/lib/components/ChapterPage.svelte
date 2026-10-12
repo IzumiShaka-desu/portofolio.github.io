@@ -9,7 +9,8 @@
 	import Pos from '$lib/illustrations/Pos.svelte';
 	import Trading from '$lib/illustrations/Trading.svelte';
 	import Fitting from '$lib/illustrations/Fitting.svelte';
-	import Classified from '$lib/illustrations/Classified.svelte';
+	import CasePhotos from '$lib/illustrations/CasePhotos.svelte';
+	import CaseHealth from '$lib/illustrations/CaseHealth.svelte';
 
 	interface Props {
 		chapter: Chapter;
@@ -27,7 +28,8 @@
 		pos: Pos,
 		trading: Trading,
 		fitting: Fitting,
-		classified: Classified
+		'case-photos': CasePhotos,
+		'case-health': CaseHealth
 	};
 	const Illo = $derived(illustrations[chapter.illustration]);
 	const points = $derived(chapter.points[arcId] ?? chapter.points.default);

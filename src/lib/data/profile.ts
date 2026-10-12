@@ -50,7 +50,7 @@ export interface Chapter {
 	reach: string;
 	where: string;
 	when: string;
-	illustration: 'warehouse' | 'pos' | 'trading' | 'fitting' | 'classified';
+	illustration: 'warehouse' | 'pos' | 'trading' | 'fitting' | 'case-photos' | 'case-health';
 	/** Styles the page as a classified file (NDA work). */
 	classified?: boolean;
 	/** Big shout per arc; falls back to `default`. */
@@ -108,7 +108,7 @@ export const arcs: Record<ArcId, Arc> = {
 		classTitle: 'Product Engineer · Sprout Digital Labs',
 		quest: 'Leading 3 engineers on a Finance & Accounting module: a 21-table double-entry ledger to replace Accurate.',
 		specialMove: 'Schema-first build: one schema, parallel submodules',
-		chapters: ['khonic', 'classified', 'labamu', 'quickpro', 'dressonme'],
+		chapters: ['khonic', 'nda-photos', 'labamu', 'nda-health', 'quickpro', 'dressonme'],
 		sideStories: ['urails', 'cashkit'],
 		focusTools: [
 			'Supabase',
@@ -134,7 +134,7 @@ export const arcs: Record<ArcId, Arc> = {
 		classTitle: 'Product Engineer (Mobile) · Sprout Digital Labs',
 		quest: 'Owning the Khonic mobile apps and PWA that warehouse staff scan with every day.',
 		specialMove: 'One codebase, two stores',
-		chapters: ['labamu', 'classified', 'quickpro', 'khonic', 'dressonme'],
+		chapters: ['labamu', 'nda-health', 'quickpro', 'khonic', 'nda-photos', 'dressonme'],
 		sideStories: ['halotutor', 'urails', 'cashkit'],
 		focusTools: [
 			'Flutter',
@@ -183,33 +183,54 @@ export const chapters: Record<string, Chapter> = {
 		links: [],
 		note: 'Internal product: no public link'
 	},
-	classified: {
-		id: 'classified',
+	'nda-photos': {
+		id: 'nda-photos',
 		title: 'Project [[xxxxxx]]',
 		kana: 'プロジェクト[[xxx]]',
-		catchphrase: 'The project that must not be named!!',
+		catchphrase: 'A private Google Photos, with its own machine learning!!',
 		quote: "Can't say. Ask me in an interview.",
-		tagline: 'Client work under NDA',
-		role: 'Led iOS migration · built CV module',
-		reach: 'Classified · NDA',
-		where: 'Sprout Digital Labs · client projects',
+		tagline: 'Google Photos–style platform with custom ML',
+		role: 'Built the computer vision module',
+		reach: 'Government client · NDA',
+		where: 'Sprout Digital Labs · client project',
 		when: '2023 – now',
-		illustration: 'classified',
+		illustration: 'case-photos',
+		classified: true,
+		shout: { default: 'EYES ONLY!' },
+		points: {
+			default: [
+				'A Google Photos–style platform for [[xxxxxxxxxxxx]], a government client, built on an open-source photo platform and extended with custom machine learning.',
+				'Built the computer vision module behind those features and containerized it with Docker.',
+				"Wired the module into the platform's backend APIs and frontend."
+			]
+		},
+		tags: ['Computer vision', 'Machine learning', 'Docker', 'REST APIs', 'Open source'],
+		links: [],
+		note: 'Under NDA. Happy to walk through the engineering in an interview.'
+	},
+	'nda-health': {
+		id: 'nda-health',
+		title: 'Client [[xxxxxxx]]',
+		kana: 'クライアント[[xxx]]',
+		catchphrase: 'Open-heart surgery on two live apps!!',
+		quote: "Can't name the patient. The operation went fine.",
+		tagline: "Shadowing a healthcare platform's existing product",
+		role: 'Led the iOS 17 migration',
+		reach: 'Two live apps · NDA',
+		where: 'Sprout Digital Labs · client project',
+		when: '2023 – now',
+		illustration: 'case-health',
 		classified: true,
 		shout: { default: 'TOP SECRET!' },
 		points: {
-			product: [
-				'Built and containerized (Docker) a computer vision module for [[xxxxxxxxxxxx]], a government photo-management platform, wired into its backend APIs and frontend.',
-				"Led the native iOS SDK migration for two apps of [[xxxxxxxxxx]], one of Indonesia's largest online healthcare platforms, to support iOS 17."
-			],
 			default: [
 				"Led the native iOS SDK migration for two apps of [[xxxxxxxxxx]], one of Indonesia's largest online healthcare platforms, to support iOS 17.",
-				'Built and containerized (Docker) a computer vision module for [[xxxxxxxxxxxx]], a government photo-management platform, wired into its backend APIs and frontend.'
+				"Shadowing work on the client's existing product: their codebase, their users, their rules."
 			]
 		},
-		tags: ['Swift', 'iOS 17', 'Native SDK', 'Docker', 'Computer vision', 'REST APIs'],
+		tags: ['Swift', 'iOS 17', 'Native SDK'],
 		links: [],
-		note: 'Under NDA. Happy to walk through the engineering in an interview.'
+		note: "The client's existing product, under NDA. Happy to walk through it in an interview."
 	},
 	labamu: {
 		id: 'labamu',
