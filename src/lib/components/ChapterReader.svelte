@@ -210,7 +210,7 @@
 									onclick={() => goTo(i)}
 								>
 									<span class="no">{pad(i + 1)}</span>
-									<Redactable text={chapter.title} />
+									<Redactable text={chapter.short ?? chapter.title} />
 								</button>
 							</li>
 						{/each}

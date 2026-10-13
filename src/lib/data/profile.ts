@@ -49,6 +49,8 @@ export interface Media {
 export interface Chapter {
 	id: string;
 	title: string;
+	/** A shorter name for the contents tabs, when the title is long. */
+	short?: string;
 	/** Katakana reading, shown next to the entry number. */
 	kana: string;
 	/** Encyclopedia-style headline, the "!!" line. */
@@ -334,25 +336,25 @@ export const chapters: Record<string, Chapter> = {
 	},
 	labamu: {
 		id: 'labamu',
-		title: 'Labamu',
-		kana: 'ラバム',
-		catchphrase: 'The 1M+ download POS app, now in Singapore!!',
+		title: 'Labamu Singapore',
+		short: 'Labamu SG',
+		kana: 'ラバム・シンガポール',
+		catchphrase: 'An Indonesian POS app, launched in Singapore!!',
 		summary:
-			'Labamu is a point-of-sale and bookkeeping app for small businesses: cashier, catalog, invoices and quotes, and receipts printed over a Bluetooth printer. Past a million downloads, it now also runs for merchants in Singapore.',
+			"Labamu Singapore took Labamu, a point-of-sale and bookkeeping app for small businesses in Indonesia, to merchants in Singapore: sign-in with Singapore's national ID, SGD pricing, local payments, and Singapore's business rules, all from the same codebase as the Indonesian app.",
 		quote: 'New country, new currency, same app.',
-		tagline: 'POS & business app for MSMEs',
+		tagline: 'Bringing a POS app to Singapore',
 		role: 'Core mobile engineer · Singapore launch',
-		reach: '1M+ downloads · 4.3★',
+		reach: 'Live for merchants in Singapore',
 		where: 'Sprout Digital Labs',
-		when: 'Jul 2024 – May 2026',
+		when: 'Oct 2025 – May 2026',
 		illustration: 'pos',
 		shout: { default: 'SECOND COUNTRY!' },
-		rating: '4.3',
 		highlights: {
 			default: [
 				'As core mobile engineer, adapted Labamu to Singapore: SingPass login, rounding-safe SGD pricing, 2C2P payments, and local business validation.',
 				'Designed a configurable, feature-flagged home screen so one codebase serves both Indonesia and Singapore.',
-				'Tracked down a silent iOS bug that stopped receipts from printing.'
+				"Kept the Singapore branches in sync with the shared codebase through UAT, then handed the workstream over to Labamu's in-house team."
 			]
 		},
 		whatIDid: [
@@ -360,12 +362,11 @@ export const chapters: Record<string, Chapter> = {
 			"Built SingPass (Singapore's national digital ID) sign-up and login, including resuming an interrupted registration, plus a manual registration path alongside it — on top of a migration to v3 auth APIs with OTP rate limits and lockouts.",
 			'Designed a configurable home screen driven by region and feature flags, replacing duplicated per-region screens on phone and tablet, documented with nine design docs.',
 			'Built a price-calculation and currency engine that avoids rounding errors between currencies with cents (SGD, MYR) and without (IDR), covered by unit tests.',
-			'Integrated 2C2P as a payment method in the cashier flow, alongside QRIS improvements.',
+			'Integrated 2C2P as a payment method in the cashier flow.',
 			"Built region-aware validation: business-profile completeness rules per country and entity type (including Singapore's UEN), and a phone-number normalizer with country-specific rules.",
 			'Adapted invoices, quotes, cashier, and receipts to show the right currency per region, and gated barcode features where Singapore needed different behavior.',
 			'Tracked down why receipts silently wouldn\'t print on iOS — a Bluetooth permission flag disabled in the iOS build config — and hardened printer and scanner connections on iOS and Android.',
 			"Kept the Singapore branches in sync with the shared main codebase through repeated rebases, worked through UAT feedback for the rollout, and handed the workstream over to Labamu's in-house team.",
-			'Earlier: refactored the community feature and moved onboarding date pickers onto the shared CashKit component library.'
 		],
 		impact:
 			"Core mobile engineer on Labamu's launch in Singapore, its second country: national-ID sign-in, rounding-safe SGD pricing, and 2C2P payments, all in the same app Indonesian merchants use — then handed the workstream over to Labamu's in-house team.",
@@ -379,15 +380,14 @@ export const chapters: Record<string, Chapter> = {
 			'Android',
 			'SingPass',
 			'2C2P',
-			'QRIS',
 			'Feature flags',
 			'Localization',
 			'Bluetooth printing'
 		],
 		links: [
-			{ label: 'Google Play', href: 'https://play.google.com/store/apps/details?id=id.co.labamu.app' },
-			{ label: 'App Store', href: 'https://apps.apple.com/sg/app/labamu-apps-pembukuan-umkm/id1625291429' },
-			{ label: 'Singapore site', href: 'https://labamu.sg' }
+			{ label: 'labamu.sg', href: 'https://labamu.sg' },
+			{ label: 'App Store (SG)', href: 'https://apps.apple.com/sg/app/labamu-apps-pembukuan-umkm/id1625291429' },
+			{ label: 'Google Play', href: 'https://play.google.com/store/apps/details?id=id.co.labamu.app' }
 		]
 	},
 	quickpro: {
