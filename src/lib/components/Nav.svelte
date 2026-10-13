@@ -1,22 +1,28 @@
 <script lang="ts">
+	import { base } from '$app/paths';
+	import { page } from '$app/state';
+	import { arc } from '$lib/arc.svelte';
 	import { person } from '$lib/data/profile';
 	import ArcSwitcher from './ArcSwitcher.svelte';
 
 	let scrolled = $state(false);
+
+	// Section links jump within the home page, or lead back to it from a chapter page.
+	const home = $derived(page.route.id === '/' ? '' : `${base}/?arc=${arc.current}`);
 </script>
 
 <svelte:window onscroll={() => (scrolled = window.scrollY > 24)} />
 
 <nav class:scrolled aria-label="Main">
 	<div class="wrap bar">
-		<a class="brand" href="#top">
+		<a class="brand" href="{home}#top">
 			<span class="display">{person.nickname.toUpperCase()}</span><span class="dot">.</span>
 			<span class="vol kicker">Vol.01</span>
 		</a>
 		<div class="links kicker">
-			<a href="#chapters">Chapters</a>
-			<a href="#profile">Profile</a>
-			<a href="#arsenal">Arsenal</a>
+			<a href="{home}#chapters">Chapters</a>
+			<a href="{home}#profile">Profile</a>
+			<a href="{home}#arsenal">Arsenal</a>
 			<a href="#contact">Contact</a>
 		</div>
 		<div class="arc">

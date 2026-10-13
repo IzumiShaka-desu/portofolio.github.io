@@ -1,4 +1,4 @@
-<!-- DressOnMe: on-device model fitting a dress -->
+<!-- DressOnMe: the camera try-on scanning a dress -->
 <svg viewBox="0 0 320 240" role="img" aria-label="Virtual fitting app scanning a dress">
 	<defs>
 		<pattern id="ft-tone" width="5" height="5" patternUnits="userSpaceOnUse">
@@ -27,7 +27,7 @@
 	</g>
 	<g transform="translate(236 150) rotate(-6)">
 		<rect width="68" height="26" fill="var(--ink)" />
-		<text x="34" y="18" text-anchor="middle" fill="var(--white)" font-family="var(--font-mono)" font-size="11" font-weight="500">TFLite</text>
+		<text x="34" y="18" text-anchor="middle" fill="var(--white)" font-family="var(--font-mono)" font-size="11" font-weight="500">TRY ON</text>
 	</g>
 	<g fill="var(--ink)">
 		<path d="M262 56 l4 12 l12 4 l-12 4 l-4 12 l-4 -12 l-12 -4 l12 -4 Z" />

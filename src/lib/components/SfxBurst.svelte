@@ -5,10 +5,12 @@
 	const words = ['ドン!', 'バン!', 'ズバッ!'];
 	let shown = $state<{ id: number; word: string } | null>(null);
 	let timer: ReturnType<typeof setTimeout> | undefined;
+	// Only switches made while this page is open get a burst, not ones from a page visited before.
+	const initial = arc.switches;
 
 	$effect(() => {
 		const n = arc.switches;
-		if (n === 0) return;
+		if (n === initial) return;
 		if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 		shown = { id: n, word: words[n % words.length] };
 		clearTimeout(timer);

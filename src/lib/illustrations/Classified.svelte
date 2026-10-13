@@ -7,7 +7,7 @@
 
 	const labels = {
 		photos: 'A classified case file: a photo grid with a face detected, the rest redacted',
-		health: 'A classified case file: a medical cross and two phones on iOS 17, the rest redacted'
+		health: 'A classified case file: a medical cross and two phones on the iOS 18 SDK, the rest redacted'
 	};
 	// Both case files can be on the page at once, so the pattern id must be unique.
 	const tone = $derived(`cl-tone-${motif}`);
@@ -44,10 +44,10 @@
 		{:else}
 			<!-- medical cross: healthcare -->
 			<path d="M95 46 h8 v9 h9 v8 h-9 v9 h-8 v-9 h-9 v-8 h9 Z" fill="var(--red)" stroke-width="2" />
-			<!-- two apps, both on iOS 17 -->
+			<!-- two apps, both moved to the iOS 18 SDK -->
 			<rect x="184" y="48" width="24" height="42" rx="5" fill="url(#{tone})" stroke-width="2.5" />
 			<rect x="204" y="40" width="26" height="46" rx="5" fill="var(--white)" stroke-width="2.5" />
-			<text x="217" y="68" text-anchor="middle" font-family="var(--font-display)" font-size="11" fill="var(--ink)" stroke="none">17</text>
+			<text x="217" y="68" text-anchor="middle" font-family="var(--font-display)" font-size="11" fill="var(--ink)" stroke="none">18</text>
 		{/if}
 		<!-- lines and redaction bars -->
 		<g stroke="none" fill="var(--ink)">

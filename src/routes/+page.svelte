@@ -38,19 +38,3 @@
 	<Finale />
 </main>
 <SfxBurst />
-
-<style>
-	.skip {
-		position: absolute;
-		left: -999px;
-		top: 8px;
-		z-index: 200;
-		padding: 0.5rem 0.8rem;
-		background: var(--ink);
-		color: var(--white);
-	}
-
-	.skip:focus {
-		left: 8px;
-	}
-</style>

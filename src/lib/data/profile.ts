@@ -30,10 +30,21 @@ export interface Link {
 	href: string;
 }
 
+/** A screenshot or screen recording in /static, shown on the chapter's own page. */
+export interface Media {
+	type: 'image' | 'video';
+	/** Path under /static, without a leading slash, e.g. `shots/labamu-cashier.webp`. */
+	src: string;
+	alt: string;
+	caption?: string;
+}
+
 /**
- * Text in chapter titles and points may wrap words in [[double brackets]] to
- * render them as a redaction bar. Only the length of the wrapped text is used,
- * so put a placeholder there, never the real name.
+ * Each chapter has an overview (on the home page) and its own page at /chapters/<id>/.
+ *
+ * Any chapter text may wrap words in [[double brackets]] to render them as a
+ * redaction bar. Only the length of the wrapped text is used, so put a
+ * placeholder there, never the real name.
  */
 export interface Chapter {
 	id: string;
@@ -56,9 +67,17 @@ export interface Chapter {
 	/** Big shout per arc; falls back to `default`. */
 	shout: Partial<Record<ArcId, string>> & { default: string };
 	rating?: string;
-	points: Partial<Record<ArcId, string[]>> & { default: string[] };
+	/** Up to three points for the overview, per arc; falls back to `default`. */
+	highlights: Partial<Record<ArcId, string[]>> & { default: string[] };
+	/** The full list for the chapter's own page. */
+	whatIDid: string[];
+	impact: string;
+	learned: string;
+	/** The whole stack. The overview shows the first five. */
 	tags: string[];
 	links: Link[];
+	/** Never shown on classified chapters. */
+	media?: Media[];
 	/** Shown instead of links when there is nothing public to link to. */
 	note?: string;
 }
@@ -80,6 +99,12 @@ export const person = {
 	title: 'Product Engineer',
 	education: 'S.Kom Informatics, Universitas Singaperbangsa Karawang (GPA 3.84)',
 	email: 'shakaaji29@gmail.com',
+	/** Shown as "Title earned" on the character profile. */
+	honor: {
+		name: 'The Walking Encyclopedia',
+		from: 'Sprout Gala Dinner 2025',
+		why: 'for the person who can answer and explain anything about work and the world. Picked from four nominees.'
+	},
 	/**
 	 * Manga art in /static/art, each as .webp + .jpg. `full` fills the cover panel,
 	 * `bust` is a tighter crop for the profile card. Null shows a silhouette instead.
@@ -103,10 +128,10 @@ export const arcs: Record<ArcId, Arc> = {
 		summary:
 			'I own systems end to end, from the data model and backend to the apps people use every day. 4+ years shipping products, including a mobile app with 1M+ downloads.',
 		availability: 'Open to product engineering roles',
-		shout: { value: 'SOLE', label: 'engineer, full ERP' },
+		shout: { value: 'LEAD', label: 'engineer, warehouse ERP' },
 		notes: ['schema-first', 'double-entry, in the DB'],
 		classTitle: 'Product Engineer · Sprout Digital Labs',
-		quest: 'Leading 3 engineers on a Finance & Accounting module: a 21-table double-entry ledger to replace Accurate.',
+		quest: 'Leading 3 engineers on a Finance & Accounting module: a double-entry ledger to replace Accurate, now in staged user validation.',
 		specialMove: 'Schema-first build: one schema, parallel submodules',
 		chapters: ['khonic', 'nda-photos', 'labamu', 'nda-health', 'quickpro', 'dressonme'],
 		sideStories: ['urails', 'cashkit'],
@@ -158,28 +183,61 @@ export const chapters: Record<string, Chapter> = {
 		id: 'khonic',
 		title: 'Khonic',
 		kana: 'コニック',
-		catchphrase: 'One engineer, one schema, a whole warehouse!!',
+		catchphrase: "Routes, racks, and a ledger that can't lie!!",
 		quote: 'From the racks to the ledger, I own it.',
 		tagline: 'Warehouse management & ERP',
-		role: 'Sole engineer · leads 3 on accounting',
-		reach: 'Warehouse staff, every day',
-		where: 'Sprout Digital Labs · sole engineer',
-		when: '2023 – now',
+		role: 'Lead engineer · leads 3 on accounting',
+		reach: 'Warehouse staff & drivers, every day',
+		where: 'Sprout Digital Labs · lead engineer',
+		when: 'Dec 2023 – now',
 		illustration: 'warehouse',
-		shout: { default: 'SOLE ENGINEER!' },
-		points: {
-			product: [
-				'Lead a 3-engineer team building a Finance & Accounting module to replace Accurate: a 21-table ledger, double-entry rules enforced in the database, fiscal period closing, multi-entity.',
-				'Designed a Smart Racking System: slotting, batch picking, FEFO, and optimized picking routes across a two-tier warehouse.',
-				'Auto-assign deliveries with driver clustering and route optimization.'
-			],
+		shout: { default: 'LEAD ENGINEER!' },
+		highlights: {
 			default: [
-				'Own the mobile apps and PWA warehouse staff use daily: barcode/SKU scanning, stock per rack location, inbound and putaway flows built for low-tech staff.',
-				'Auto-assign deliveries with driver clustering and route optimization.',
-				'Also own the web dashboard and the Supabase/PostgreSQL backend behind it all.'
+				"Solved Khonic's routing problems: capacitated pickup-and-delivery routing (CVRP + VRPPD) for drivers, and picker routing for warehouse staff.",
+				'Built the demand–supply allocation engine that turns sales orders into FEFO-first, volume-capped pick batches.',
+				'Led the Finance & Accounting module, and a stock-ledger overhaul that flags every stock change made outside the app.'
+			],
+			mobile: [
+				'Built batch picking end to end, replacing single-order picking with a batch-picking model across the warehouse app and backend.',
+				'Built the inbound flow, from pallet intake through SKU assignment to rack placement.',
+				'Solved the picker routing problem as a closed-tour TSP, so staff walk one efficient loop instead of an arbitrary order; the same approach drives putaway and returns.'
 			]
 		},
-		tags: ['Supabase', 'PostgreSQL', 'Flutter', 'PWA', 'Web dashboard'],
+		whatIDid: [
+			"Built delivery route planning as a capacitated vehicle routing problem with pickups and deliveries (CVRP + VRPPD): one route per vehicle mixes delivery drop-offs and return pickups, and is checked against the vehicle's weight and volume limits before it's created.",
+			'Wrote a hybrid route solver that picks its method by problem size — exact dynamic programming for small routes, a genetic algorithm for medium ones, nearest-neighbor + 2-opt for large ones — with K-means clustering to group delivery stops by location.',
+			'Built batch picking end to end, replacing single-order picking with a batch-picking model across the warehouse app and backend.',
+			'Solved the picker routing problem as a closed-tour TSP (exact Held-Karp for up to 12 stops, nearest-neighbor + 2-opt beyond), so staff walk one efficient loop instead of an arbitrary order; the same approach drives putaway and returns.',
+			'Built the demand–supply allocation engine: matches sales-order demand against pallet and lot stock FEFO-first (earliest expiry leaves first), then packs orders into pick batches by SKU overlap under a volume cap.',
+			'Built the warehouse floor-plan and graph system: rack/slot/zone schema, Dijkstra shortest paths, and reverse lookup from SKU to rack location.',
+			'Overhauled stock reconciliation over four milestones: every stock movement, including each pick, now writes a traceable ledger row; a database trigger flags any change that bypasses the app; and a variance view compares system, physical, and ledger stock.',
+			'Made the stock ledger append-only with a database trigger, chosen over revoking privileges because the app connects as the table owner, so a revoke would have silently done nothing.',
+			'Built the inbound flow, from pallet intake through SKU assignment to rack placement.',
+			'Led the Finance & Accounting module with three engineers: Chart of Accounts (315 accounts, 17 account types) and cash & bank transactions reconciled against account balances; now rolling out through staged user validation.',
+			'Built the journal-entry engine (Draft → Review → Posted → Reversed) with row locking, so two simultaneous "post" actions can\'t both succeed, plus a database balance check as a backstop.',
+			'Restructured the backend from a layered layout into a feature-first one, organized around the four apps it serves.'
+		],
+		impact:
+			'Lead engineer for nearly three years on a multi-company operation where each company runs its own warehouse, with many SKUs and many suppliers per company. Brought stock reconciliation to zero product mismatches in the latest audit, and built the finance ledger core — now in staged user validation — while leading three engineers.',
+		learned:
+			"A rule that only holds by coincidence isn't a rule. If data must never change, enforce it where nothing can bypass it — the database — and check that the enforcement can't be silently skipped.",
+		tags: [
+			'Flutter',
+			'Node.js',
+			'PostgreSQL',
+			'Supabase',
+			'Route optimization',
+			'CVRP',
+			'VRPPD',
+			'TSP',
+			'Picker routing',
+			'FEFO',
+			'K-means',
+			'Dijkstra',
+			'Double-entry accounting',
+			'Feature-first architecture'
+		],
 		links: [],
 		note: 'Internal product: no public link'
 	},
@@ -190,21 +248,38 @@ export const chapters: Record<string, Chapter> = {
 		catchphrase: 'A private Google Photos, with its own machine learning!!',
 		quote: "Can't say. Ask me in an interview.",
 		tagline: 'Google Photos–style platform with custom ML',
-		role: 'Built the computer vision module',
+		role: 'Lead on 3 of 4 detection pipelines',
 		reach: 'Government client · NDA',
 		where: 'Sprout Digital Labs · client project',
-		when: '2023 – now',
+		when: 'Nov 2024 – Sep 2025',
 		illustration: 'case-photos',
 		classified: true,
 		shout: { default: 'EYES ONLY!' },
-		points: {
+		highlights: {
 			default: [
-				'A Google Photos–style platform for [[xxxxxxxxxxxx]], a government client, built on an open-source photo platform and extended with custom machine learning.',
-				'Built the computer vision module behind those features with YOLO and TensorFlow, served it through FastAPI, and containerized it with Docker.',
-				"Wired the module into the platform's backend through OpenAPI and into the Vue frontend."
+				'Built three of the four detection pipelines (age/gender, landmark, notable figure) in a computer-vision service for a government media platform.',
+				'Swapped a TensorFlow classifier for YOLO + ONNX, and fixed a PyTorch upgrade that stopped every model from loading.',
+				'Reworked search and map UX, including restoring semantic search ranking that a regression had switched off.'
 			]
 		},
-		tags: ['Computer vision', 'YOLO', 'TensorFlow', 'FastAPI', 'Vue', 'OpenAPI', 'Docker'],
+		whatIDid: [
+			'Built the age/gender estimation, landmark recognition, and notable-figure recognition pipelines of a computer-vision microservice (FastAPI, Docker), inside a service a colleague had scaffolded.',
+			'Ported an earlier Flask prototype into the production service, replacing stubbed endpoints with real model inference.',
+			'Integrated an open-source age/gender model (MiVOLO) with a YOLO-based face and person detector.',
+			'Replaced a TensorFlow/Keras landmark classifier with a lighter YOLO + ONNX pipeline, removing the TensorFlow dependency entirely.',
+			'Fixed model loading after a PyTorch 2.6 upgrade changed a default and broke every model.',
+			'Added GPU detection and traceback-level error logging for production debugging, plus container and ARM64 build fixes.',
+			'Wrote a retraining guide for the two custom-trained models.',
+			'Extended the analysis results page with similar-photos and detail views, in English and Indonesian.',
+			'Reworked global search into people, places, and folders with debouncing and caching, and fixed a regression that had switched off semantic search ranking.',
+			'Made the map auto-center and zoom to fit photo locations.',
+			'Removed an overly strict request-size limit in a production hotfix.'
+		],
+		impact:
+			"Took the platform's photo-analysis features from mock responses to real model inference, and kept them running through a framework upgrade that broke model loading.",
+		learned:
+			'In production ML the model is the easy part. What breaks is the runtime around it — one changed PyTorch default was enough to stop every model from loading.',
+		tags: ['Python', 'FastAPI', 'YOLOv8', 'ONNX', 'PyTorch', 'Docker', 'SvelteKit', 'Computer vision'],
 		links: [],
 		note: 'Under NDA. Happy to walk through the engineering in an interview.'
 	},
@@ -215,20 +290,37 @@ export const chapters: Record<string, Chapter> = {
 		catchphrase: 'Open-heart surgery on two live apps!!',
 		quote: "Can't name the patient. The operation went fine.",
 		tagline: "Shadowing a healthcare platform's existing product",
-		role: 'Led the iOS 17 migration',
+		role: 'Sole iOS engineer on the migration',
 		reach: 'Two live apps · NDA',
 		where: 'Sprout Digital Labs · client project',
-		when: '2023 – now',
+		when: 'Apr – May 2025',
 		illustration: 'case-health',
 		classified: true,
 		shout: { default: 'TOP SECRET!' },
-		points: {
+		highlights: {
 			default: [
-				"Led the native iOS SDK migration for two apps of [[xxxxxxxxxx]], one of Indonesia's largest online healthcare platforms, to support iOS 17.",
-				"Shadowing work on the client's existing product: their codebase, their users, their rules."
+				"Brought two live healthcare iOS apps onto Xcode 16 and the iOS 18 SDK to meet Apple's App Store submission requirement.",
+				'Cleared the deprecation, concurrency, and dependency breakages the new toolchain surfaced across both codebases.',
+				'Fixed two build-breaking issues: a socket-library regression and a failing CocoaPods install script.'
 			]
 		},
-		tags: ['Swift', 'iOS 17', 'Native SDK'],
+		whatIDid: [
+			"Brought two live iOS apps of a healthcare platform (patient-facing and doctor-facing) onto Xcode 16 and the iOS 18 SDK to meet Apple's April 2025 App Store submission requirement.",
+			'Upgraded the toolchain and CocoaPods dependencies, then cleared the errors and deprecations the new SDK surfaced.',
+			'Replaced deprecated Apple APIs, such as legacy data unarchiving, with their current secure equivalents.',
+			'Resolved new Swift concurrency and access-control warnings introduced by the stricter compiler.',
+			'Updated dozens of delegate protocols for modern weak-reference rules and moved view-model state off a deprecated RxSwift type, across roughly 90 files.',
+			'Diagnosed a regression in a real-time socket library, pinned it to a known-good version, and updated the call sites to match.',
+			'Fixed a CocoaPods post-install script that broke installs on unset shell variables.',
+			'Updated push-notification and analytics SDK integrations to versions compatible with the new toolchain.',
+			'Cleaned up a corrupted Xcode project file left behind by merge conflicts.',
+			'Added a naming-conventions rules file for AI-assisted coding to both codebases.'
+		],
+		impact:
+			"Kept two live healthcare apps shippable on the App Store through Apple's Xcode 16 requirement, in about six weeks — and neither build fix needed a redo afterward.",
+		learned:
+			'A forced toolchain upgrade collects years of postponed deprecations into one bill. Sometimes the safest fix is pinning a dependency, not chasing its newest version.',
+		tags: ['Swift', 'iOS', 'Xcode 16', 'iOS 18 SDK', 'CocoaPods', 'RxSwift', 'Swift Concurrency', 'Socket.IO'],
 		links: [],
 		note: "The client's existing product, under NDA. Happy to walk through it in an interview."
 	},
@@ -239,51 +331,91 @@ export const chapters: Record<string, Chapter> = {
 		catchphrase: 'The 1M+ download POS app, now in Singapore!!',
 		quote: 'New country, new currency, same app.',
 		tagline: 'POS & business app for MSMEs',
-		role: 'Led mobile for the SG expansion',
+		role: 'Lead, Labamu Singapore (mobile)',
 		reach: '1M+ downloads · 4.3★',
 		where: 'Sprout Digital Labs',
-		when: '2023 – now',
+		when: 'Jul 2024 – May 2026',
 		illustration: 'pos',
-		shout: { default: '1M+ DOWNLOADS!' },
+		shout: { default: 'SECOND COUNTRY!' },
 		rating: '4.3',
-		points: {
-			mobile: [
-				"Led mobile work for Labamu's expansion to Singapore: multi-language, timezone handling, multi-currency, and 2C2P payments.",
-				'Built barcode-based inventory management for better stock accuracy.',
-				'Fixed a silent iOS Bluetooth permission bug that blocked receipt printers.'
-			],
+		highlights: {
 			default: [
-				"Led mobile work for Labamu's expansion to Singapore: multi-language, timezone handling, multi-currency, and 2C2P payments.",
-				'Built barcode-based inventory management for better stock accuracy.'
+				'Led the mobile workstream adapting Labamu to Singapore: SingPass login, rounding-safe SGD pricing, 2C2P payments, and local business validation.',
+				'Designed a configurable, feature-flagged home screen so one codebase serves both Indonesia and Singapore.',
+				'Tracked down a silent iOS bug that stopped receipts from printing.'
 			]
 		},
-		tags: ['Flutter', '2C2P', 'i18n', 'Barcode', 'Bluetooth printing'],
+		whatIDid: [
+			'Led the mobile workstream that made Labamu work for Singapore merchants — local identity, payments, pricing, and business rules — on a codebase shared with Indonesia.',
+			"Built SingPass (Singapore's national digital ID) sign-up and login, including resuming an interrupted registration, plus a manual registration path alongside it — on top of a migration to v3 auth APIs with OTP rate limits and lockouts.",
+			'Designed a configurable home screen driven by region and feature flags, replacing duplicated per-region screens on phone and tablet, documented with nine design docs.',
+			'Built a price-calculation and currency engine that avoids rounding errors between currencies with cents (SGD, MYR) and without (IDR), covered by unit tests.',
+			'Integrated 2C2P as a payment method in the cashier flow, alongside QRIS improvements.',
+			"Built region-aware validation: business-profile completeness rules per country and entity type (including Singapore's UEN), and a phone-number normalizer with country-specific rules.",
+			'Adapted invoices, quotes, cashier, and receipts to show the right currency per region, and gated barcode features where Singapore needed different behavior.',
+			'Tracked down why receipts silently wouldn\'t print on iOS — a Bluetooth permission flag disabled in the iOS build config — and hardened printer and scanner connections on iOS and Android.',
+			"Kept the Singapore branches in sync with the shared main codebase through repeated rebases, worked through UAT feedback for the rollout, and handed the workstream over to Labamu's in-house team.",
+			'Earlier: refactored the community feature and moved onboarding date pickers onto the shared CashKit component library.'
+		],
+		impact:
+			"Led the mobile side of Labamu's launch in Singapore, its second country: national-ID sign-in, rounding-safe SGD pricing, and 2C2P payments, all in the same app Indonesian merchants use — then handed the workstream over to Labamu's in-house team.",
+		learned:
+			'Going multi-country is mostly configuration, not features. Building one switchable screen instead of copying per region is what kept two markets shippable from one codebase.',
+		tags: [
+			'Flutter',
+			'Dart',
+			'GetX',
+			'iOS',
+			'Android',
+			'SingPass',
+			'2C2P',
+			'QRIS',
+			'Feature flags',
+			'Localization',
+			'Bluetooth printing'
+		],
 		links: [
 			{ label: 'Google Play', href: 'https://play.google.com/store/apps/details?id=id.co.labamu.app' },
-			{ label: 'App Store', href: 'https://apps.apple.com/sg/app/labamu-apps-pembukuan-umkm/id1625291429' }
+			{ label: 'App Store', href: 'https://apps.apple.com/sg/app/labamu-apps-pembukuan-umkm/id1625291429' },
+			{ label: 'Singapore site', href: 'https://labamu.sg' }
 		]
 	},
 	quickpro: {
 		id: 'quickpro',
 		title: 'QuickPro',
 		kana: 'クイックプロ',
-		catchphrase: 'Market orders, live over WebSocket!!',
+		catchphrase: 'Read the market while it moves!!',
 		quote: 'The market moves. The screen keeps up.',
 		tagline: 'Real-time trading app',
-		role: 'Built core modules · freelance',
+		role: 'Freelance mobile engineer · team of 4',
 		reach: '100K+ downloads · 4.5★',
 		where: 'Foreximf.com · freelance, remote',
-		when: '2022 – 2023',
+		when: 'Jul 2022 – Apr 2023',
 		illustration: 'trading',
-		shout: { default: '100K+ DOWNLOADS!' },
+		shout: { default: 'FIVE-MONTH BUILD!' },
 		rating: '4.5',
-		points: {
+		highlights: {
 			default: [
-				'Built core modules, Market Detector and Trading Base, with real-time orders over WebSocket.',
-				'Applied Clean Architecture and turned Figma designs into responsive Flutter UI.'
+				'Built Market Detector, the feature traders use to read current market information, from API client to UI.',
+				'Laid the base for the real-time market-order flow, which teammates kept extending after my part ended.',
+				'Wrote the order logic and per-pair decimal precision on the trade screen.'
 			]
 		},
-		tags: ['Flutter', 'WebSocket', 'Clean Architecture', 'Figma'],
+		whatIDid: [
+			'Built Market Detector end to end on the client: a feed for reading current market information, with type filters, notifications, and charts on the detail screen.',
+			'Laid the base for the real-time market-order flow: the trade module that hosts every trading screen, the market-execution screen, and the early trade service layer.',
+			'Helped design the initial WebSocket approach for live trading data; teammates later built reconnect handling and further improvements on top of it.',
+			"Wrote the trade screen's order logic: buy/sell and pending-order condition checks, and the calculator formulas.",
+			"Made prices follow each currency pair's own number of decimal places instead of one fixed setting.",
+			'Fixed clashes between screens listening to the same live data by adding a shared listener bridge, plus a listener bug on position history.',
+			'Built the economic calendar: moved it to a CMS-backed API, added a timeline that scrolls to the current event, finished-event states, and deep links to a specific event.',
+			'Built the home screen: currency flags, login dialog, and a watchlist timeframe kept in sync with the chart.'
+		],
+		impact:
+			"Initiated two core pieces of QuickPro — Market Detector and the base of the real-time market-order flow — in a five-month build with Foreximf's team, and left a foundation other engineers kept building on.",
+		learned:
+			"I wrote the first version of the real-time order flow, then watched other people keep building on it. That's when it clicked for me: a good base isn't the cleverest code, it's the one the next person can extend without having to ask me.",
+		tags: ['Flutter', 'Dart', 'flutter_bloc', 'flutter_modular', 'WebSocket', 'Dio', 'fl_chart', 'Firebase', 'Hive'],
 		links: [
 			{ label: 'Google Play', href: 'https://play.google.com/store/apps/details?id=com.foreximf.client' }
 		]
@@ -295,24 +427,38 @@ export const chapters: Record<string, Chapter> = {
 		catchphrase: 'A fitting room that fits in your pocket!!',
 		quote: 'Try it on before you buy it.',
 		tagline: 'Virtual fitting app',
-		role: 'Mobile engineer · incubation team',
-		reach: 'Google Play & App Store',
+		role: 'Sole mobile engineer · team of 7',
+		reach: 'Public store releases · now delisted',
 		where: 'Bangkit Incubation · Dikti & Binus',
-		when: '2022 – 2023',
+		when: 'Sep 2022 – Jan 2023',
 		illustration: 'fitting',
-		shout: { default: 'TOP INCUBATION TEAM!' },
-		points: {
+		shout: { default: 'ONLY MOBILE DEV!' },
+		highlights: {
 			default: [
-				'Migrated the Kotlin app to Flutter so Android and iOS ship from one codebase.',
-				'Set up CI/CD for Android and iOS builds and releases.',
-				'Shipped a TFLite virtual dress-fitting feature with designers and ML engineers. Selected as one of the best incubation teams.'
+				'Only mobile engineer on a 7-person Bangkit capstone team; rebuilt the app from Kotlin to Flutter for Android and iOS.',
+				"Built the camera try-on flow and connected it to the ML team's server-side model.",
+				"Took it to public store releases (v0.9.34) during Bangkit's capstone incubation program."
 			]
 		},
-		tags: ['Flutter', 'Kotlin', 'TFLite', 'CI/CD'],
-		links: [
-			{ label: 'Google Play', href: 'https://play.google.com/store/apps/details?id=id.dressonme.dress_on_me' },
-			{ label: 'App Store', href: 'https://apps.apple.com/us/app/dressonme/id1659598377' }
-		]
+		whatIDid: [
+			'Rebuilt the app in Flutter from an existing Kotlin version made by an earlier team member, so it could ship on Android and iOS from one codebase.',
+			'Set up the foundation with clean architecture (domain, data, presentation), BLoC/Cubit for state, go_router, get_it, and Hive.',
+			'Built the camera flow for virtual try-on: live preview, front/back switching, and fixes for aspect ratio and mirrored images.',
+			"Integrated the ML team's try-on service: the app uploads the user's photo, the server runs the model, and the result comes back to the app.",
+			'Built the wardrobe: add, edit, delete, and reorder clothing items, with auto-crop on upload.',
+			'Integrated Firebase Analytics, Crashlytics, and push notifications.',
+			'Set up localization for multiple languages.',
+			'Migrated navigation to go_router 6.',
+			'Set up the Codemagic CI/CD pipeline and fixed its build failures.',
+			'Profiled the release build for jank (dropped frames).'
+		],
+		impact:
+			"As the only mobile engineer on a team of seven, took DressOnMe from an Android-only Kotlin app to a cross-platform Flutter app with public store releases, as part of Bangkit's capstone incubation program.",
+		learned:
+			"I was the only mobile dev on a team of seven, so if the app broke, nobody else could fix it. That's why I set up the structure before the screens: future me needed code he could still read at 2 AM before a demo.",
+		tags: ['Flutter', 'Dart', 'Clean Architecture', 'BLoC/Cubit', 'go_router', 'Firebase', 'Hive', 'Codemagic', 'Camera'],
+		links: [],
+		note: 'No longer listed on the stores'
 	}
 };
 
@@ -386,7 +532,7 @@ export const storySoFar = [
 	{
 		year: 'At Sprout',
 		title: 'Boss fights',
-		text: 'Takes Labamu to Singapore. Becomes the sole engineer on Khonic.',
+		text: 'Takes Labamu to Singapore. Becomes lead engineer on Khonic.',
 		sfx: 'ゴゴゴ'
 	},
 	{

@@ -13,7 +13,15 @@ All copy lives in [`src/lib/data/profile.ts`](src/lib/data/profile.ts): arcs, ch
 
 Chapters are laid out like entries in a manga encyclopedia and read one page at a time. When a whole page fits on screen, the book pins in place and scrolling turns the pages; otherwise the pages are stacked and each one flips in as it scrolls into view. The contents tabs and the folded corner scroll to a chapter, and in pinned mode ← / → work too (← is next, as in manga).
 
-For NDA work, wrap anything confidential in a chapter title or point in `[[double brackets]]` and it renders as a black redaction bar. Only the length of the bracketed text is used, so put a placeholder like `[[xxxxxxxx]]` there, never the real name.
+Each chapter on the home page is an overview: up to three `highlights` (per arc if you like), the first five tags with a `+N` chip for the rest, and a **Read the full chapter** button. That leads to the chapter's own page at `/chapters/<id>/`, which shows:
+
+- `whatIDid`: the full list, one panel each
+- `impact`: in a jagged shout box
+- `learned`: in a speech bubble from the portrait
+- `media`: screenshots or screen recordings, taped in as panels. Put the files in `static/` (e.g. `static/shots/`) and list them with a path relative to it. Leave it out and the section disappears.
+- every tag, the store/website links, and a **Next chapter** card that follows the current arc's order
+
+For NDA work, set `classified: true` and wrap anything confidential in `[[double brackets]]`; it renders as a black redaction bar. Only the length of the bracketed text is used, so put a placeholder like `[[xxxxxxxx]]` there, never the real name. Classified chapters never show media, even if some is listed.
 
 ## Portrait art
 
