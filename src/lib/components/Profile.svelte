@@ -12,6 +12,7 @@
 		{ k: 'Base', v: person.location },
 		{ k: 'Education', v: person.education },
 		{ k: 'Special move', v: arc.data.specialMove },
+		{ k: 'Title earned', v: `"${person.honor.name}", ${person.honor.from}: ${person.honor.why}` },
 		{
 			k: 'Sidekick',
 			v: 'Claude. Plans, drafts and tests with me; I review every line and make the calls.'

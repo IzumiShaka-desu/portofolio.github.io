@@ -1,16 +1,12 @@
 <script lang="ts">
+	import { base } from '$app/paths';
 	import type { ArcId, Chapter } from '$lib/data/profile';
 	import FocusLines from './FocusLines.svelte';
 	import Hanko from './Hanko.svelte';
 	import Redactable from './Redactable.svelte';
 	import ShoutBubble from './ShoutBubble.svelte';
-	import SpeechBubble from './SpeechBubble.svelte';
-	import Warehouse from '$lib/illustrations/Warehouse.svelte';
-	import Pos from '$lib/illustrations/Pos.svelte';
-	import Trading from '$lib/illustrations/Trading.svelte';
-	import Fitting from '$lib/illustrations/Fitting.svelte';
-	import CasePhotos from '$lib/illustrations/CasePhotos.svelte';
-	import CaseHealth from '$lib/illustrations/CaseHealth.svelte';
+	import ChapterArt from './ChapterArt.svelte';
+	import ChapterParams from './ChapterParams.svelte';
 
 	interface Props {
 		chapter: Chapter;
@@ -23,23 +19,14 @@
 
 	let { chapter, index, total, arcId, onturn }: Props = $props();
 
-	const illustrations = {
-		warehouse: Warehouse,
-		pos: Pos,
-		trading: Trading,
-		fitting: Fitting,
-		'case-photos': CasePhotos,
-		'case-health': CaseHealth
-	};
-	const Illo = $derived(illustrations[chapter.illustration]);
-	const points = $derived(chapter.points[arcId] ?? chapter.points.default);
+	/** The overview shows this many tags; the rest are on the chapter's own page. */
+	const TAG_LIMIT = 5;
+
+	const points = $derived(chapter.highlights[arcId] ?? chapter.highlights.default);
+	const tags = $derived(chapter.tags.slice(0, TAG_LIMIT));
+	const moreTags = $derived(chapter.tags.slice(TAG_LIMIT));
 	const shout = $derived(chapter.shout[arcId] ?? chapter.shout.default);
 	const num = $derived(String(index + 1).padStart(2, '0'));
-	const params = $derived([
-		{ k: 'Role', v: chapter.role },
-		{ k: 'Reach', v: chapter.reach },
-		{ k: 'Period', v: chapter.when }
-	]);
 
 	// The unread pages behind this one, drawn as a stack that thins out as you read.
 	const stack = $derived.by(() => {
@@ -58,17 +45,8 @@
 <article class="chapter" class:classified={chapter.classified} aria-labelledby="ch-{chapter.id}">
 	<div class="tab kicker">Chapter {num}</div>
 	<div class="sheet" style="box-shadow: {stack}">
-		<div class="art panel">
-			<div class="art-tone" aria-hidden="true"></div>
-			<p class="entry">
-				<span class="entry-no display">{num}</span>
-				<span class="entry-kana" lang="ja"><Redactable text={chapter.kana} /></span>
-			</p>
-			<div class="art-bubble">
-				<SpeechBubble tail="bl">{chapter.quote}</SpeechBubble>
-			</div>
-			<div class="illo"><Illo /></div>
-			<h3 id="ch-{chapter.id}" class="art-title"><Redactable text={chapter.title} /></h3>
+		<div class="art">
+			<ChapterArt {chapter} {num} heading="h3" headingId="ch-{chapter.id}" />
 		</div>
 
 		<header class="head">
@@ -87,15 +65,7 @@
 				</ShoutBubble>
 				<span class="sfx action-sfx" lang="ja" aria-hidden="true">ドドド</span>
 			</div>
-			<dl class="params panel">
-				<div class="params-head kicker"><span lang="ja">能力</span> Parameters</div>
-				{#each params as param (param.k)}
-					<div class="param">
-						<dt class="kicker">{param.k}</dt>
-						<dd><Redactable text={param.v} /></dd>
-					</div>
-				{/each}
-			</dl>
+			<ChapterParams {chapter} />
 		</div>
 
 		<div class="text">
@@ -108,17 +78,14 @@
 
 		<footer class="foot">
 			<ul class="tags" aria-label="Stack">
-				{#each chapter.tags as tag (tag)}<li class="chip">{tag}</li>{/each}
+				{#each tags as tag (tag)}<li class="chip">{tag}</li>{/each}
+				{#if moreTags.length}
+					<li class="chip more" title={moreTags.join(', ')}>
+						+{moreTags.length}<span class="sr-only"> more: {moreTags.join(', ')}</span>
+					</li>
+				{/if}
 			</ul>
-			{#if chapter.links.length}
-				<div class="links">
-					{#each chapter.links as link (link.href)}
-						<a class="btn" href={link.href} target="_blank" rel="noopener">{link.label} ↗</a>
-					{/each}
-				</div>
-			{:else if chapter.note}
-				<span class="private lettering">{chapter.note}</span>
-			{/if}
+			<a class="btn ink read" href="{base}/chapters/{chapter.id}/?arc={arcId}">Read the full chapter →</a>
 		</footer>
 
 		{#if onturn}
@@ -167,108 +134,16 @@
 		border: var(--line) solid var(--ink);
 	}
 
-	/* ---- the art panel ---- */
-	.art {
-		grid-area: art;
-		container-type: inline-size;
-		display: flex;
-		flex-direction: column;
-		min-height: 340px;
-		background: var(--white);
-	}
-
-	.art-tone {
-		position: absolute;
-		inset: 0;
-		background-image: radial-gradient(var(--ink) 30%, transparent 32%);
-		background-size: 6px 6px;
-		-webkit-mask-image: radial-gradient(ellipse at 50% 46%, transparent 32%, #000 88%);
-		mask-image: radial-gradient(ellipse at 50% 46%, transparent 32%, #000 88%);
-		opacity: 0.6;
-	}
-
-	.classified .art-tone {
-		opacity: 0.85;
-	}
-
-	.entry {
-		position: absolute;
-		top: 12px;
-		left: 12px;
-		z-index: 2;
-		display: flex;
-		align-items: baseline;
-		gap: 0.5rem;
-		padding: 0.2rem 0.65rem 0.3rem;
-		background: var(--white);
-		border: var(--line-thin) solid var(--ink);
-	}
-
-	.entry-no {
-		font-size: 1.7rem;
-		line-height: 1;
-		color: var(--red);
-	}
-
-	.entry-kana {
-		font-family: var(--font-display);
-		font-size: 1rem;
-	}
-
-	.art-bubble {
-		position: absolute;
-		top: 3.9rem;
-		right: 10px;
-		z-index: 2;
-		max-width: 56%;
-	}
-
-	.art-bubble :global(.body) {
-		font-size: 0.8rem;
-		padding: 0.9em 1.2em;
-	}
-
-	.illo {
-		position: relative;
-		z-index: 1;
-		flex: 1;
-		display: grid;
-		place-items: center;
-		padding: 6.2rem 0.6rem 3.4rem;
-	}
-
-	.illo :global(svg) {
-		width: min(100%, 360px);
-		height: auto;
-	}
-
-	/* outlined name across the bottom, encyclopedia style */
-	.art-title {
-		position: absolute;
-		left: 12px;
-		right: 8px;
-		bottom: 4px;
-		z-index: 2;
-		margin: 0;
-		font-family: var(--font-display);
-		font-weight: 400;
-		font-size: min(4rem, 15cqi);
-		line-height: 0.95;
-		letter-spacing: 0.02em;
-		text-transform: uppercase;
-		color: var(--white);
-		-webkit-text-stroke: 7px var(--ink);
-		paint-order: stroke fill;
-		text-shadow: 4px 4px 0 var(--ink);
-		transform: rotate(-3deg);
-		transform-origin: left bottom;
-	}
-
 	/* ---- the entry ---- */
 	.head {
 		grid-area: head;
 		position: relative;
 		padding: 0.2rem 0.3rem 0;
+	}
+
+	.art {
+		grid-area: art;
+		--art-min: 340px;
 	}
 
 	.classified .head {
@@ -330,44 +205,6 @@
 		transform: rotate(-10deg);
 	}
 
-	.params {
-		display: grid;
-		align-content: start;
-		gap: 0.4rem;
-		margin: 0;
-		padding: 0.7rem 0.9rem 0.8rem;
-	}
-
-	.params-head {
-		padding-bottom: 0.35rem;
-		margin-bottom: 0.15rem;
-		border-bottom: var(--line-thin) solid var(--ink);
-	}
-
-	.params-head span {
-		color: var(--red);
-		font-family: var(--font-display);
-		letter-spacing: 0.1em;
-	}
-
-	.param {
-		display: grid;
-		grid-template-columns: 4.4rem minmax(0, 1fr);
-		gap: 0.5rem;
-		align-items: baseline;
-	}
-
-	dt {
-		color: var(--ink-faint);
-	}
-
-	dd {
-		margin: 0;
-		font-size: 0.88rem;
-		font-weight: 700;
-		line-height: 1.35;
-	}
-
 	.text {
 		grid-area: text;
 		padding: 0 0.3rem;
@@ -421,25 +258,15 @@
 		list-style: none;
 	}
 
-	.links {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.6rem;
-	}
-
-	.links .btn {
-		font-size: 0.72rem;
-		padding: 0.5em 0.8em;
-		box-shadow: 3px 3px 0 var(--ink);
-	}
-
-	.private {
-		font-size: 0.85rem;
+	.more {
+		border-style: dashed;
 		color: var(--ink-faint);
+		cursor: help;
 	}
 
-	.classified .private {
-		color: var(--red);
+	.read {
+		font-size: 0.72rem;
+		padding: 0.6em 0.9em;
 	}
 
 	/* folded bottom-left corner: where you'd lift a manga page */
@@ -517,7 +344,7 @@
 		}
 
 		.art {
-			min-height: 420px;
+			--art-min: 420px;
 		}
 	}
 </style>
