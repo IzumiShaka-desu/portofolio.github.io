@@ -55,6 +55,7 @@
 					{/if}
 					<p class="catch display">{chapter.catchphrase}</p>
 					<p class="caption">↓ {chapter.tagline}. {chapter.where}.</p>
+					<p class="summary"><Redactable text={chapter.summary} /></p>
 					<div class="row">
 						<div class="action panel">
 							<FocusLines seed={index * 17 + 3} rays={70} innerX={0.62} innerY={0.56} />
@@ -279,6 +280,11 @@
 		z-index: 1;
 		font-size: 1.5rem;
 		transform: rotate(-10deg);
+	}
+
+	.summary {
+		font-size: 1rem;
+		line-height: 1.6;
 	}
 
 	.links {

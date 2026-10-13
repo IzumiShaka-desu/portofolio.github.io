@@ -52,7 +52,7 @@
 			{/if}
 			<p class="meta kicker">● {chapter.where} · {chapter.when}</p>
 			<p class="catch display">{chapter.catchphrase}</p>
-			<p class="caption">↓ {chapter.tagline}.</p>
+			<p class="summary"><Redactable text={chapter.summary} /></p>
 		</header>
 
 		<div class="text">
@@ -155,10 +155,10 @@
 		line-height: 1.1;
 	}
 
-	.caption {
-		margin-top: 0.6rem;
-		font-size: 0.9rem;
-		line-height: 1.45;
+	.summary {
+		margin-top: 0.7rem;
+		font-size: 0.95rem;
+		line-height: 1.55;
 		color: var(--ink-soft);
 	}
 

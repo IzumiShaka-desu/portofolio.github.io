@@ -53,6 +53,8 @@ export interface Chapter {
 	kana: string;
 	/** Encyclopedia-style headline, the "!!" line. */
 	catchphrase: string;
+	/** What the project is, in plain words: the overview's description. */
+	summary: string;
 	/** Speech bubble over the art. */
 	quote: string;
 	tagline: string;
@@ -128,10 +130,10 @@ export const arcs: Record<ArcId, Arc> = {
 		summary:
 			'I own systems end to end, from the data model and backend to the apps people use every day. 4+ years shipping products, including a mobile app with 1M+ downloads.',
 		availability: 'Open to product engineering roles',
-		shout: { value: 'LEAD', label: 'engineer, warehouse ERP' },
+		shout: { value: 'CORE', label: 'engineer & PIC, ERP' },
 		notes: ['schema-first', 'double-entry, in the DB'],
 		classTitle: 'Product Engineer · Sprout Digital Labs',
-		quest: 'Leading 3 engineers on a Finance & Accounting module: a double-entry ledger to replace Accurate, now in staged user validation.',
+		quest: 'Directing 3 engineers on a Finance & Accounting module: a double-entry ledger to replace Accurate, now in staged user validation.',
 		specialMove: 'Schema-first build: one schema, parallel submodules',
 		chapters: ['khonic', 'nda-photos', 'labamu', 'nda-health', 'quickpro', 'dressonme'],
 		sideStories: ['urails', 'cashkit'],
@@ -184,19 +186,21 @@ export const chapters: Record<string, Chapter> = {
 		title: 'Khonic',
 		kana: 'コニック',
 		catchphrase: "Routes, racks, and a ledger that can't lie!!",
+		summary:
+			'Khonic runs the warehouses and deliveries of a multi-company business, where each company has its own warehouse, many SKUs, and many suppliers. It\'s four apps on one backend: a sales app, a back-office dashboard, a warehouse app for staff on the floor, and a driver app, now gaining a finance and accounting module to replace Accurate.',
 		quote: 'From the racks to the ledger, I own it.',
 		tagline: 'Warehouse management & ERP',
-		role: 'Lead engineer · leads 3 on accounting',
+		role: 'Core engineer & PIC · directs 3 on accounting',
 		reach: 'Warehouse staff & drivers, every day',
-		where: 'Sprout Digital Labs · lead engineer',
+		where: 'Sprout Digital Labs · core engineer & PIC',
 		when: 'Dec 2023 – now',
 		illustration: 'warehouse',
-		shout: { default: 'LEAD ENGINEER!' },
+		shout: { default: 'PERSON IN CHARGE!' },
 		highlights: {
 			default: [
 				"Solved Khonic's routing problems: capacitated pickup-and-delivery routing (CVRP + VRPPD) for drivers, and picker routing for warehouse staff.",
 				'Built the demand–supply allocation engine that turns sales orders into FEFO-first, volume-capped pick batches.',
-				'Led the Finance & Accounting module, and a stock-ledger overhaul that flags every stock change made outside the app.'
+				'Directed the engineers assigned to the Finance & Accounting module, and built a stock-ledger overhaul that flags every stock change made outside the app.'
 			],
 			mobile: [
 				'Built batch picking end to end, replacing single-order picking with a batch-picking model across the warehouse app and backend.',
@@ -214,12 +218,12 @@ export const chapters: Record<string, Chapter> = {
 			'Overhauled stock reconciliation over four milestones: every stock movement, including each pick, now writes a traceable ledger row; a database trigger flags any change that bypasses the app; and a variance view compares system, physical, and ledger stock.',
 			'Made the stock ledger append-only with a database trigger, chosen over revoking privileges because the app connects as the table owner, so a revoke would have silently done nothing.',
 			'Built the inbound flow, from pallet intake through SKU assignment to rack placement.',
-			'Led the Finance & Accounting module with three engineers: Chart of Accounts (315 accounts, 17 account types) and cash & bank transactions reconciled against account balances; now rolling out through staged user validation.',
+			'Directed the three engineers assigned to the Finance & Accounting module and built it with them: Chart of Accounts (315 accounts, 17 account types) and cash & bank transactions reconciled against account balances; now rolling out through staged user validation.',
 			'Built the journal-entry engine (Draft → Review → Posted → Reversed) with row locking, so two simultaneous "post" actions can\'t both succeed, plus a database balance check as a backstop.',
 			'Restructured the backend from a layered layout into a feature-first one, organized around the four apps it serves.'
 		],
 		impact:
-			'Lead engineer for nearly three years on a multi-company operation where each company runs its own warehouse, with many SKUs and many suppliers per company. Brought stock reconciliation to zero product mismatches in the latest audit, and built the finance ledger core — now in staged user validation — while leading three engineers.',
+			'Core engineer and PIC for nearly three years on a multi-company operation where each company runs its own warehouse, with many SKUs and many suppliers per company. Brought stock reconciliation to zero product mismatches in the latest audit, and built the finance ledger core — now in staged user validation — while directing the three engineers assigned to it.',
 		learned:
 			"A rule that only holds by coincidence isn't a rule. If data must never change, enforce it where nothing can bypass it — the database — and check that the enforcement can't be silently skipped.",
 		tags: [
@@ -246,9 +250,11 @@ export const chapters: Record<string, Chapter> = {
 		title: 'Project [[xxxxxx]]',
 		kana: 'プロジェクト[[xxx]]',
 		catchphrase: 'A private Google Photos, with its own machine learning!!',
+		summary:
+			'A private, self-hosted photo and video library for a government client, in the spirit of Google Photos: search by people, places, and folders, a map of where photos were taken, and custom computer vision that estimates age and gender, recognizes landmarks, and spots notable figures.',
 		quote: "Can't say. Ask me in an interview.",
 		tagline: 'Google Photos–style platform with custom ML',
-		role: 'Lead on 3 of 4 detection pipelines',
+		role: 'Built 3 of 4 detection pipelines',
 		reach: 'Government client · NDA',
 		where: 'Sprout Digital Labs · client project',
 		when: 'Nov 2024 – Sep 2025',
@@ -288,6 +294,8 @@ export const chapters: Record<string, Chapter> = {
 		title: 'Client [[xxxxxxx]]',
 		kana: 'クライアント[[xxx]]',
 		catchphrase: 'Open-heart surgery on two live apps!!',
+		summary:
+			'Two live iOS apps of an online healthcare platform, one for patients and one for doctors. From April 2025, Apple only accepted App Store uploads built with Xcode 16 and the iOS 18 SDK, so both apps had to make the jump without breaking.',
 		quote: "Can't name the patient. The operation went fine.",
 		tagline: "Shadowing a healthcare platform's existing product",
 		role: 'Sole iOS engineer on the migration',
@@ -329,6 +337,8 @@ export const chapters: Record<string, Chapter> = {
 		title: 'Labamu',
 		kana: 'ラバム',
 		catchphrase: 'The 1M+ download POS app, now in Singapore!!',
+		summary:
+			'Labamu is a point-of-sale and bookkeeping app for small businesses: cashier, catalog, invoices and quotes, and receipts printed over a Bluetooth printer. Past a million downloads, it now also runs for merchants in Singapore.',
 		quote: 'New country, new currency, same app.',
 		tagline: 'POS & business app for MSMEs',
 		role: 'Lead, Labamu Singapore (mobile)',
@@ -385,6 +395,8 @@ export const chapters: Record<string, Chapter> = {
 		title: 'QuickPro',
 		kana: 'クイックプロ',
 		catchphrase: 'Read the market while it moves!!',
+		summary:
+			'QuickPro is FOREXimf\'s trading app: a watchlist with live charts, placing and managing trades, an economic calendar, and Market Detector for reading the market as it moves.',
 		quote: 'The market moves. The screen keeps up.',
 		tagline: 'Real-time trading app',
 		role: 'Freelance mobile engineer · team of 4',
@@ -425,6 +437,8 @@ export const chapters: Record<string, Chapter> = {
 		title: 'DressOnMe',
 		kana: 'ドレスオンミー',
 		catchphrase: 'A fitting room that fits in your pocket!!',
+		summary:
+			'DressOnMe is a camera-based virtual fitting room: try clothes on virtually, keep a wardrobe of what you own, and save and share outfit ideas. Built as a Bangkit Academy 2022 capstone project.',
 		quote: 'Try it on before you buy it.',
 		tagline: 'Virtual fitting app',
 		role: 'Sole mobile engineer · team of 7',
@@ -532,7 +546,7 @@ export const storySoFar = [
 	{
 		year: 'At Sprout',
 		title: 'Boss fights',
-		text: 'Takes Labamu to Singapore. Becomes lead engineer on Khonic.',
+		text: 'Takes Labamu to Singapore. Becomes core engineer and PIC on Khonic.',
 		sfx: 'ゴゴゴ'
 	},
 	{
