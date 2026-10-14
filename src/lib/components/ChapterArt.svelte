@@ -15,6 +15,16 @@
 	let { chapter, num, heading, headingId }: Props = $props();
 
 	const Illo = $derived(illustrations[chapter.illustration]);
+
+	// Scale the name down so its longest word fits across the panel. A redaction bar is
+	// about 0.52em per character against roughly 0.9em for a letter.
+	const fit = $derived(
+		Math.max(
+			...chapter.title
+				.split(/\s+/)
+				.map((word) => (/^\[\[.+\]\]$/.test(word) ? (word.length - 4) * 0.6 : word.length))
+		) * 0.95
+	);
 </script>
 
 <!-- The chapter's art panel: entry number, quote, illustration, and the outlined name across the bottom.
@@ -29,7 +39,9 @@
 		<SpeechBubble tail="bl">{chapter.quote}</SpeechBubble>
 	</div>
 	<div class="illo"><Illo /></div>
-	<svelte:element this={heading} id={headingId} class="art-title"><Redactable text={chapter.title} /></svelte:element>
+	<svelte:element this={heading} id={headingId} class="art-title" style="--fit: {fit}"
+		><Redactable text={chapter.title} /></svelte:element
+	>
 </div>
 
 <style>
@@ -117,7 +129,7 @@
 		margin: 0;
 		font-family: var(--font-display);
 		font-weight: 400;
-		font-size: min(4rem, 15cqi);
+		font-size: min(4rem, 15cqi, calc((100cqi - 2rem) / var(--fit, 6)));
 		line-height: 0.95;
 		letter-spacing: 0.02em;
 		text-transform: uppercase;

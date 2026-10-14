@@ -28,6 +28,7 @@
 	const num = $derived(pad(index + 1));
 	const nextIndex = $derived((index + 1) % order.length);
 	const next = $derived(chapters[order[nextIndex]]);
+	const shout = $derived(chapter.shout[arc.current] ?? chapter.shout.default);
 	const media = $derived(chapter.classified ? [] : (chapter.media ?? []));
 	const did = $derived(chapter.whatIDid);
 </script>
@@ -54,7 +55,17 @@
 					{/if}
 					<p class="catch display">{chapter.catchphrase}</p>
 					<p class="caption">↓ {chapter.tagline}. {chapter.where}.</p>
-					<ChapterParams {chapter} />
+					<p class="summary"><Redactable text={chapter.summary} /></p>
+					<div class="row">
+						<div class="action panel">
+							<FocusLines seed={index * 17 + 3} rays={70} innerX={0.62} innerY={0.56} />
+							<ShoutBubble class="shout" seed={index * 7 + 2} spikes={20}>
+								<span class="shout-text">{shout}</span>
+							</ShoutBubble>
+							<span class="sfx action-sfx" lang="ja" aria-hidden="true">ドドド</span>
+						</div>
+						<ChapterParams {chapter} />
+					</div>
 					{#if chapter.links.length}
 						<div class="links">
 							{#each chapter.links as link (link.href)}
@@ -235,6 +246,45 @@
 		font-size: 0.9rem;
 		line-height: 1.45;
 		color: var(--ink-soft);
+	}
+
+	.row {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--gutter);
+	}
+
+	.action {
+		min-height: 140px;
+		display: grid;
+		place-items: center;
+		background: var(--white);
+	}
+
+	.action :global(.shout) {
+		position: relative;
+		z-index: 1;
+		transform: rotate(-4deg);
+	}
+
+	.shout-text {
+		display: block;
+		font-size: clamp(0.85rem, 1.4vw, 1rem);
+		max-width: 10ch;
+	}
+
+	.action-sfx {
+		position: absolute;
+		left: 8px;
+		bottom: 6px;
+		z-index: 1;
+		font-size: 1.5rem;
+		transform: rotate(-10deg);
+	}
+
+	.summary {
+		font-size: 1rem;
+		line-height: 1.6;
 	}
 
 	.links {
@@ -546,6 +596,12 @@
 
 	.next:hover .next-arrow {
 		transform: translateX(6px);
+	}
+
+	@media (min-width: 480px) {
+		.row {
+			grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+		}
 	}
 
 	@media (min-width: 720px) {

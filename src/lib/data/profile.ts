@@ -49,10 +49,14 @@ export interface Media {
 export interface Chapter {
 	id: string;
 	title: string;
+	/** A shorter name for the contents tabs, when the title is long. */
+	short?: string;
 	/** Katakana reading, shown next to the entry number. */
 	kana: string;
 	/** Encyclopedia-style headline, the "!!" line. */
 	catchphrase: string;
+	/** What the project is, in plain words: the overview's description. */
+	summary: string;
 	/** Speech bubble over the art. */
 	quote: string;
 	tagline: string;
@@ -128,10 +132,10 @@ export const arcs: Record<ArcId, Arc> = {
 		summary:
 			'I own systems end to end, from the data model and backend to the apps people use every day. 4+ years shipping products, including a mobile app with 1M+ downloads.',
 		availability: 'Open to product engineering roles',
-		shout: { value: 'LEAD', label: 'engineer, warehouse ERP' },
+		shout: { value: 'CORE', label: 'engineer & PIC, ERP' },
 		notes: ['schema-first', 'double-entry, in the DB'],
 		classTitle: 'Product Engineer · Sprout Digital Labs',
-		quest: 'Leading 3 engineers on a Finance & Accounting module: a double-entry ledger to replace Accurate, now in staged user validation.',
+		quest: 'Directing 3 engineers on a Finance & Accounting module: a double-entry ledger to replace Accurate, now in staged user validation.',
 		specialMove: 'Schema-first build: one schema, parallel submodules',
 		chapters: ['khonic', 'nda-photos', 'labamu', 'nda-health', 'quickpro', 'dressonme'],
 		sideStories: ['urails', 'cashkit'],
@@ -184,19 +188,21 @@ export const chapters: Record<string, Chapter> = {
 		title: 'Khonic',
 		kana: 'コニック',
 		catchphrase: "Routes, racks, and a ledger that can't lie!!",
+		summary:
+			'Khonic runs the warehouses and deliveries of a multi-company business, where each company has its own warehouse, many SKUs, and many suppliers. It\'s four apps on one backend: a sales app, a back-office dashboard, a warehouse app for staff on the floor, and a driver app, now gaining a finance and accounting module to replace Accurate.',
 		quote: 'From the racks to the ledger, I own it.',
 		tagline: 'Warehouse management & ERP',
-		role: 'Lead engineer · leads 3 on accounting',
+		role: 'Core engineer & PIC · directs 3 on accounting',
 		reach: 'Warehouse staff & drivers, every day',
-		where: 'Sprout Digital Labs · lead engineer',
+		where: 'Sprout Digital Labs · core engineer & PIC',
 		when: 'Dec 2023 – now',
 		illustration: 'warehouse',
-		shout: { default: 'LEAD ENGINEER!' },
+		shout: { default: 'PERSON IN CHARGE!' },
 		highlights: {
 			default: [
 				"Solved Khonic's routing problems: capacitated pickup-and-delivery routing (CVRP + VRPPD) for drivers, and picker routing for warehouse staff.",
 				'Built the demand–supply allocation engine that turns sales orders into FEFO-first, volume-capped pick batches.',
-				'Led the Finance & Accounting module, and a stock-ledger overhaul that flags every stock change made outside the app.'
+				'Directed the engineers assigned to the Finance & Accounting module, and built a stock-ledger overhaul that flags every stock change made outside the app.'
 			],
 			mobile: [
 				'Built batch picking end to end, replacing single-order picking with a batch-picking model across the warehouse app and backend.',
@@ -214,12 +220,12 @@ export const chapters: Record<string, Chapter> = {
 			'Overhauled stock reconciliation over four milestones: every stock movement, including each pick, now writes a traceable ledger row; a database trigger flags any change that bypasses the app; and a variance view compares system, physical, and ledger stock.',
 			'Made the stock ledger append-only with a database trigger, chosen over revoking privileges because the app connects as the table owner, so a revoke would have silently done nothing.',
 			'Built the inbound flow, from pallet intake through SKU assignment to rack placement.',
-			'Led the Finance & Accounting module with three engineers: Chart of Accounts (315 accounts, 17 account types) and cash & bank transactions reconciled against account balances; now rolling out through staged user validation.',
+			'Directed the three engineers assigned to the Finance & Accounting module and built it with them: Chart of Accounts (315 accounts, 17 account types) and cash & bank transactions reconciled against account balances; now rolling out through staged user validation.',
 			'Built the journal-entry engine (Draft → Review → Posted → Reversed) with row locking, so two simultaneous "post" actions can\'t both succeed, plus a database balance check as a backstop.',
 			'Restructured the backend from a layered layout into a feature-first one, organized around the four apps it serves.'
 		],
 		impact:
-			'Lead engineer for nearly three years on a multi-company operation where each company runs its own warehouse, with many SKUs and many suppliers per company. Brought stock reconciliation to zero product mismatches in the latest audit, and built the finance ledger core — now in staged user validation — while leading three engineers.',
+			'Core engineer and PIC for nearly three years on a multi-company operation where each company runs its own warehouse, with many SKUs and many suppliers per company. Brought stock reconciliation to zero product mismatches in the latest audit, and built the finance ledger core — now in staged user validation — while directing the three engineers assigned to it.',
 		learned:
 			"A rule that only holds by coincidence isn't a rule. If data must never change, enforce it where nothing can bypass it — the database — and check that the enforcement can't be silently skipped.",
 		tags: [
@@ -246,9 +252,11 @@ export const chapters: Record<string, Chapter> = {
 		title: 'Project [[xxxxxx]]',
 		kana: 'プロジェクト[[xxx]]',
 		catchphrase: 'A private Google Photos, with its own machine learning!!',
+		summary:
+			'A private, self-hosted photo and video library for a government client, in the spirit of Google Photos: search by people, places, and folders, a map of where photos were taken, and custom computer vision that estimates age and gender, recognizes landmarks, and spots notable figures.',
 		quote: "Can't say. Ask me in an interview.",
 		tagline: 'Google Photos–style platform with custom ML',
-		role: 'Lead on 3 of 4 detection pipelines',
+		role: 'Built 3 of 4 detection pipelines',
 		reach: 'Government client · NDA',
 		where: 'Sprout Digital Labs · client project',
 		when: 'Nov 2024 – Sep 2025',
@@ -288,6 +296,8 @@ export const chapters: Record<string, Chapter> = {
 		title: 'Client [[xxxxxxx]]',
 		kana: 'クライアント[[xxx]]',
 		catchphrase: 'Open-heart surgery on two live apps!!',
+		summary:
+			'Two live iOS apps of an online healthcare platform, one for patients and one for doctors. From April 2025, Apple only accepted App Store uploads built with Xcode 16 and the iOS 18 SDK, so both apps had to make the jump without breaking.',
 		quote: "Can't name the patient. The operation went fine.",
 		tagline: "Shadowing a healthcare platform's existing product",
 		role: 'Sole iOS engineer on the migration',
@@ -326,39 +336,40 @@ export const chapters: Record<string, Chapter> = {
 	},
 	labamu: {
 		id: 'labamu',
-		title: 'Labamu',
-		kana: 'ラバム',
-		catchphrase: 'The 1M+ download POS app, now in Singapore!!',
+		title: 'Labamu Singapore',
+		short: 'Labamu SG',
+		kana: 'ラバム・シンガポール',
+		catchphrase: 'An Indonesian POS app, launched in Singapore!!',
+		summary:
+			"Labamu Singapore took Labamu, a point-of-sale and bookkeeping app for small businesses in Indonesia, to merchants in Singapore: sign-in with Singapore's national ID, SGD pricing, local payments, and Singapore's business rules, all from the same codebase as the Indonesian app.",
 		quote: 'New country, new currency, same app.',
-		tagline: 'POS & business app for MSMEs',
-		role: 'Lead, Labamu Singapore (mobile)',
-		reach: '1M+ downloads · 4.3★',
+		tagline: 'Bringing a POS app to Singapore',
+		role: 'Core mobile engineer · Singapore launch',
+		reach: 'Live for merchants in Singapore',
 		where: 'Sprout Digital Labs',
-		when: 'Jul 2024 – May 2026',
+		when: 'Oct 2025 – May 2026',
 		illustration: 'pos',
 		shout: { default: 'SECOND COUNTRY!' },
-		rating: '4.3',
 		highlights: {
 			default: [
-				'Led the mobile workstream adapting Labamu to Singapore: SingPass login, rounding-safe SGD pricing, 2C2P payments, and local business validation.',
+				'As core mobile engineer, adapted Labamu to Singapore: SingPass login, rounding-safe SGD pricing, 2C2P payments, and local business validation.',
 				'Designed a configurable, feature-flagged home screen so one codebase serves both Indonesia and Singapore.',
-				'Tracked down a silent iOS bug that stopped receipts from printing.'
+				"Kept the Singapore branches in sync with the shared codebase through UAT, then handed the workstream over to Labamu's in-house team."
 			]
 		},
 		whatIDid: [
-			'Led the mobile workstream that made Labamu work for Singapore merchants — local identity, payments, pricing, and business rules — on a codebase shared with Indonesia.',
+			'Core mobile engineer on the workstream that made Labamu work for Singapore merchants — local identity, payments, pricing, and business rules — on a codebase shared with Indonesia.',
 			"Built SingPass (Singapore's national digital ID) sign-up and login, including resuming an interrupted registration, plus a manual registration path alongside it — on top of a migration to v3 auth APIs with OTP rate limits and lockouts.",
 			'Designed a configurable home screen driven by region and feature flags, replacing duplicated per-region screens on phone and tablet, documented with nine design docs.',
 			'Built a price-calculation and currency engine that avoids rounding errors between currencies with cents (SGD, MYR) and without (IDR), covered by unit tests.',
-			'Integrated 2C2P as a payment method in the cashier flow, alongside QRIS improvements.',
+			'Integrated 2C2P as a payment method in the cashier flow.',
 			"Built region-aware validation: business-profile completeness rules per country and entity type (including Singapore's UEN), and a phone-number normalizer with country-specific rules.",
 			'Adapted invoices, quotes, cashier, and receipts to show the right currency per region, and gated barcode features where Singapore needed different behavior.',
 			'Tracked down why receipts silently wouldn\'t print on iOS — a Bluetooth permission flag disabled in the iOS build config — and hardened printer and scanner connections on iOS and Android.',
 			"Kept the Singapore branches in sync with the shared main codebase through repeated rebases, worked through UAT feedback for the rollout, and handed the workstream over to Labamu's in-house team.",
-			'Earlier: refactored the community feature and moved onboarding date pickers onto the shared CashKit component library.'
 		],
 		impact:
-			"Led the mobile side of Labamu's launch in Singapore, its second country: national-ID sign-in, rounding-safe SGD pricing, and 2C2P payments, all in the same app Indonesian merchants use — then handed the workstream over to Labamu's in-house team.",
+			"Core mobile engineer on Labamu's launch in Singapore, its second country: national-ID sign-in, rounding-safe SGD pricing, and 2C2P payments, all in the same app Indonesian merchants use — then handed the workstream over to Labamu's in-house team.",
 		learned:
 			'Going multi-country is mostly configuration, not features. Building one switchable screen instead of copying per region is what kept two markets shippable from one codebase.',
 		tags: [
@@ -369,15 +380,14 @@ export const chapters: Record<string, Chapter> = {
 			'Android',
 			'SingPass',
 			'2C2P',
-			'QRIS',
 			'Feature flags',
 			'Localization',
 			'Bluetooth printing'
 		],
 		links: [
-			{ label: 'Google Play', href: 'https://play.google.com/store/apps/details?id=id.co.labamu.app' },
-			{ label: 'App Store', href: 'https://apps.apple.com/sg/app/labamu-apps-pembukuan-umkm/id1625291429' },
-			{ label: 'Singapore site', href: 'https://labamu.sg' }
+			{ label: 'labamu.sg', href: 'https://labamu.sg' },
+			{ label: 'App Store (SG)', href: 'https://apps.apple.com/sg/app/labamu-apps-pembukuan-umkm/id1625291429' },
+			{ label: 'Google Play', href: 'https://play.google.com/store/apps/details?id=id.co.labamu.app' }
 		]
 	},
 	quickpro: {
@@ -385,6 +395,8 @@ export const chapters: Record<string, Chapter> = {
 		title: 'QuickPro',
 		kana: 'クイックプロ',
 		catchphrase: 'Read the market while it moves!!',
+		summary:
+			'QuickPro is FOREXimf\'s trading app: a watchlist with live charts, placing and managing trades, an economic calendar, and Market Detector for reading the market as it moves.',
 		quote: 'The market moves. The screen keeps up.',
 		tagline: 'Real-time trading app',
 		role: 'Freelance mobile engineer · team of 4',
@@ -425,6 +437,8 @@ export const chapters: Record<string, Chapter> = {
 		title: 'DressOnMe',
 		kana: 'ドレスオンミー',
 		catchphrase: 'A fitting room that fits in your pocket!!',
+		summary:
+			'DressOnMe is a camera-based virtual fitting room: try clothes on virtually, keep a wardrobe of what you own, and save and share outfit ideas. Built as a Bangkit Academy 2022 capstone project.',
 		quote: 'Try it on before you buy it.',
 		tagline: 'Virtual fitting app',
 		role: 'Sole mobile engineer · team of 7',
@@ -532,7 +546,7 @@ export const storySoFar = [
 	{
 		year: 'At Sprout',
 		title: 'Boss fights',
-		text: 'Takes Labamu to Singapore. Becomes lead engineer on Khonic.',
+		text: 'Takes Labamu to Singapore. Becomes core engineer and PIC on Khonic.',
 		sfx: 'ゴゴゴ'
 	},
 	{

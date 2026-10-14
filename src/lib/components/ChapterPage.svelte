@@ -1,12 +1,9 @@
 <script lang="ts">
 	import { base } from '$app/paths';
 	import type { ArcId, Chapter } from '$lib/data/profile';
-	import FocusLines from './FocusLines.svelte';
 	import Hanko from './Hanko.svelte';
 	import Redactable from './Redactable.svelte';
-	import ShoutBubble from './ShoutBubble.svelte';
 	import ChapterArt from './ChapterArt.svelte';
-	import ChapterParams from './ChapterParams.svelte';
 
 	interface Props {
 		chapter: Chapter;
@@ -25,7 +22,6 @@
 	const points = $derived(chapter.highlights[arcId] ?? chapter.highlights.default);
 	const tags = $derived(chapter.tags.slice(0, TAG_LIMIT));
 	const moreTags = $derived(chapter.tags.slice(TAG_LIMIT));
-	const shout = $derived(chapter.shout[arcId] ?? chapter.shout.default);
 	const num = $derived(String(index + 1).padStart(2, '0'));
 
 	// The unread pages behind this one, drawn as a stack that thins out as you read.
@@ -41,7 +37,8 @@
 	});
 </script>
 
-<!-- Laid out like an entry in a manga encyclopedia: big art on the left, the entry on the right. -->
+<!-- The overview of a chapter, laid out like an entry in a manga encyclopedia: art on the left, a short
+     entry on the right, and a button to the chapter's own page for the rest. -->
 <article class="chapter" class:classified={chapter.classified} aria-labelledby="ch-{chapter.id}">
 	<div class="tab kicker">Chapter {num}</div>
 	<div class="sheet" style="box-shadow: {stack}">
@@ -53,20 +50,10 @@
 			{#if chapter.classified}
 				<Hanko class="seal" top="Case" main="機密" bottom="NDA" />
 			{/if}
+			<p class="meta kicker">● {chapter.where} · {chapter.when}</p>
 			<p class="catch display">{chapter.catchphrase}</p>
-			<p class="caption">↓ {chapter.tagline}. {chapter.where}.</p>
+			<p class="summary"><Redactable text={chapter.summary} /></p>
 		</header>
-
-		<div class="row">
-			<div class="action panel">
-				<FocusLines seed={index * 17 + 3} rays={70} innerX={0.62} innerY={0.56} />
-				<ShoutBubble class="shout" seed={index * 7 + 2} spikes={20}>
-					<span class="shout-text">{shout}</span>
-				</ShoutBubble>
-				<span class="sfx action-sfx" lang="ja" aria-hidden="true">ドドド</span>
-			</div>
-			<ChapterParams {chapter} />
-		</div>
 
 		<div class="text">
 			<ul>
@@ -128,7 +115,7 @@
 		display: grid;
 		gap: var(--gutter);
 		grid-template-columns: minmax(0, 1fr);
-		grid-template-areas: 'art' 'head' 'row' 'text' 'foot';
+		grid-template-areas: 'art' 'head' 'text' 'foot';
 		padding: var(--gutter);
 		background: var(--white);
 		border: var(--line) solid var(--ink);
@@ -158,51 +145,21 @@
 		transform: rotate(9deg);
 	}
 
+	.meta {
+		margin-bottom: 0.7rem;
+		color: var(--ink-faint);
+	}
+
 	.catch {
-		font-size: clamp(1.3rem, 2.3vw, 1.85rem);
-		line-height: 1.12;
+		font-size: clamp(1.4rem, 2.8vw, 2.2rem);
+		line-height: 1.1;
 	}
 
-	.caption {
-		margin-top: 0.5rem;
-		font-size: 0.84rem;
-		line-height: 1.45;
+	.summary {
+		margin-top: 0.7rem;
+		font-size: 0.95rem;
+		line-height: 1.55;
 		color: var(--ink-soft);
-	}
-
-	.row {
-		grid-area: row;
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		gap: var(--gutter);
-	}
-
-	.action {
-		min-height: 140px;
-		display: grid;
-		place-items: center;
-		background: var(--white);
-	}
-
-	.action :global(.shout) {
-		position: relative;
-		z-index: 1;
-		transform: rotate(-4deg);
-	}
-
-	.shout-text {
-		display: block;
-		font-size: clamp(0.85rem, 1.4vw, 1rem);
-		max-width: 10ch;
-	}
-
-	.action-sfx {
-		position: absolute;
-		left: 8px;
-		bottom: 6px;
-		z-index: 1;
-		font-size: 1.5rem;
-		transform: rotate(-10deg);
 	}
 
 	.text {
@@ -330,17 +287,11 @@
 		transform: rotate(-10deg);
 	}
 
-	@media (min-width: 480px) {
-		.row {
-			grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-		}
-	}
-
 	@media (min-width: 760px) {
 		.sheet {
 			grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-			grid-template-rows: auto auto 1fr auto;
-			grid-template-areas: 'art head' 'art row' 'art text' 'foot foot';
+			grid-template-rows: auto 1fr auto;
+			grid-template-areas: 'art head' 'art text' 'foot foot';
 		}
 
 		.art {
