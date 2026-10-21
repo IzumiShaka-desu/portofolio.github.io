@@ -16,3 +16,13 @@ export const illustrations: Record<Chapter['illustration'], Component> = {
 	'case-photos': CasePhotos,
 	'case-health': CaseHealth
 };
+
+/** Where a close-up panel aims on each illustration, as % of its width and height. */
+export const closeUps: Record<Chapter['illustration'], [number, number]> = {
+	warehouse: [80, 60],
+	pos: [76, 70],
+	trading: [50, 42],
+	fitting: [54, 46],
+	'case-photos': [62, 72],
+	'case-health': [62, 72]
+};
